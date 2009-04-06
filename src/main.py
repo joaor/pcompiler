@@ -18,7 +18,9 @@ reserved = { 'and' 			:	'AND',
 							'write'		:	'WRITE',
 							'readln'	:	'READLN',
 							'read'		:	'READ',
-							'then'	:	'THEN'}
+							'then'		:	'THEN',
+							'type'		:	'TYPE',
+							'const'		:	'CONST'}
 
 # List of token names
 tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
