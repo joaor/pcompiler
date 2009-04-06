@@ -15,8 +15,8 @@ reserved = { 'and' 			:	'AND',
 							'begin'		:	'BEGIN',
 							'end'			:	'END',
 							'writeln'	:	'WRITELN',
-							'write'		:	'WRITE'
-							'readln'	:	'READLN'
+							'write'		:	'WRITE',
+							'readln'	:	'READLN',
 							'read'		:	'READ'}
 
 # List of token names
@@ -28,7 +28,8 @@ tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
 					'IF','FOR','WHILE','REPEAT',
 					'EQUALS','LESS','GREATER','GREATER_OR_EQUAL','LESS_OR_EQUAL','NOT_EQUAL',
 					'DECLARATOR', 'BEGIN', 'END', 'PROGRAM',
-					'WRITE', 'WRITELN', 'READLN', 'READ')
+					'WRITE', 'WRITELN', 'READLN', 'READ', 'SEMICOLON', 'COMMA', 'COLON',
+					'COMMENT', 'STRING')
 
 # Regular statement rules for tokens.
 t_EQUALS = r'='
@@ -44,10 +45,14 @@ t_GREATER_OR_EQUAL	=	r'>='
 t_LESS_OR_EQUAL	=	r'<='
 t_NOT_EQUAL	=	r'<>'
 t_DECLARATOR	=	r':='
+t_SEMICOLON = r';'
+t_COMMA = r','
+t_COLON = r':'
+t_COMMENT = r' (\{ [^\}]* \}) | (\(\* [^(\*\))]* \*\))'
+t_STRING = r" (\' [^\']* \') | (\" [^\"]* \") "
 
 def t_VAR(t):
-	#r'[a-zA-Z_][\w_]*'
-	r'[a-zA-Z_]+'
+	r'[a-zA-Z_][\w_]*'
 	if t.value.lower() in reserved:
 		t.type = reserved.get(t.value.lower())    # Check for reserved words
 	return t
@@ -57,7 +62,7 @@ def t_CHAR(t):
 	return t
 
 def t_REAL(t):
-	r'[0-9]+"."[0-9]+'
+	r'[0-9]+\.[0-9]+'
 	return t
 
 # A regular statement rule with some action code.
