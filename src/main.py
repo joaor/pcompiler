@@ -1,16 +1,23 @@
 from ply import lex
 
-reserved = { 'and' 		:	'AND',
-							'or'		:	'OR',
-							'not'		:	'NOT',
-							'if'		:	'IF',
-							'for'		:	'FOR',
-							'while'	:	'WHILE',
-							'repeat':	'REPEAT',
-							'mod'		:	'MOD',
-							'div'		:	'DIV',
-							'true'	:	'TRUE',
-							'false'	:	'FALSE'}
+reserved = { 'and' 			:	'AND',
+							'or'			:	'OR',
+							'not'			:	'NOT',
+							'if'			:	'IF',
+							'for'			:	'FOR',
+							'while'		:	'WHILE',
+							'repeat'	:	'REPEAT',
+							'mod'			:	'MOD',
+							'div'			:	'DIV',
+							'true'		:	'TRUE',
+							'false'		:	'FALSE',
+							'program'	:	'PROGRAM',
+							'begin'		:	'BEGIN',
+							'end'			:	'END',
+							'writeln'	:	'WRITELN',
+							'write'		:	'WRITE'
+							'readln'	:	'READLN'
+							'read'		:	'READ'}
 
 # List of token names
 tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
@@ -19,7 +26,9 @@ tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
 					'AND','OR','NOT',
 					'TRUE','FALSE',
 					'IF','FOR','WHILE','REPEAT',
-					'EQUALS','LESS','GREATER','GREATER_OR_EQUAL','LESS_OR_EQUAL','NOT_EQUAL','DECLARATOR')
+					'EQUALS','LESS','GREATER','GREATER_OR_EQUAL','LESS_OR_EQUAL','NOT_EQUAL',
+					'DECLARATOR', 'BEGIN', 'END', 'PROGRAM',
+					'WRITE', 'WRITELN', 'READLN', 'READ')
 
 # Regular statement rules for tokens.
 t_EQUALS = r'='
