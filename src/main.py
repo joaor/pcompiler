@@ -17,7 +17,8 @@ reserved = { 'and' 			:	'AND',
 							'writeln'	:	'WRITELN',
 							'write'		:	'WRITE',
 							'readln'	:	'READLN',
-							'read'		:	'READ'}
+							'read'		:	'READ',
+							'then'	:	'THEN'}
 
 # List of token names
 tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
@@ -29,7 +30,7 @@ tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
 					'EQUALS','LESS','GREATER','GREATER_OR_EQUAL','LESS_OR_EQUAL','NOT_EQUAL',
 					'DECLARATOR', 'BEGIN', 'END', 'PROGRAM',
 					'WRITE', 'WRITELN', 'READLN', 'READ', 'SEMICOLON', 'COMMA', 'COLON',
-					'COMMENT', 'STRING')
+					'COMMENT', 'STRING','DOT','THEN')
 
 # Regular statement rules for tokens.
 t_EQUALS = r'='
@@ -50,6 +51,7 @@ t_COMMA = r','
 t_COLON = r':'
 t_COMMENT = r' (\{ [^\}]* \}) | (\(\* [^(\*\))]* \*\))'
 t_STRING = r" (\' [^\']* \') | (\" [^\"]* \") "
+t_DOT = r'.'
 
 def t_VAR(t):
 	r'[a-zA-Z_][\w_]*'

@@ -1,0 +1,1 @@
+PROGRAM strings2 (output); VAR a,b: string(20); BEGIN x := 'One,two,'; y := 'three,four'; a := trim(x); b := a + y; IF x = a THEN writeln(b); writeln(index(b,'ee')); END.
