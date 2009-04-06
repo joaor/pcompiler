@@ -51,7 +51,7 @@ t_COMMA = r','
 t_COLON = r':'
 t_COMMENT = r' (\{ [^\}]* \}) | (\(\* [^(\*\))]* \*\))'
 t_STRING = r" (\' [^\']* \') | (\" [^\"]* \") "
-t_DOT = r'.'
+t_DOT = r'\.'
 
 def t_VAR(t):
 	r'[a-zA-Z_][\w_]*'
