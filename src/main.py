@@ -57,7 +57,7 @@ def t_CHAR(t):
 	return t
 
 def t_REAL(t):
-	r'[0-9]+.[0-9]+'
+	r'[0-9]+"."[0-9]+'
 	return t
 
 # A regular statement rule with some action code.
