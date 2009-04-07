@@ -99,16 +99,18 @@ def t_error(t):
 # Build the lexer
 lex.lex()
 
-# Get the input
-data = raw_input()
 
-lex.input(data)
+if __name__=="__main__":
+	# Get the input
+	data = raw_input()
 
-# Tokenize
-while 1 :
-        tok = lex.token()
-        if not tok :
-                break
-        print tok
+	lex.input(data)
+
+	# Tokenize
+	while 1 :
+		   tok = lex.token()
+		   if not tok :
+		           break
+		   print tok
 
 
