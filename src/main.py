@@ -20,7 +20,10 @@ reserved = { 'and' 			:	'AND',
 							'read'		:	'READ',
 							'then'		:	'THEN',
 							'type'		:	'TYPE',
-							'const'		:	'CONST'}
+							'const'		:	'CONST',
+							'else'		:	'ELSE',
+							'procedure'	:	'PROCEDURE',
+							'function'	:	'FUNCTION'}
 
 # List of token names
 tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
@@ -28,9 +31,9 @@ tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
 					'LEFT_PAREN','RIGHT_PAREN',
 					'AND','OR','NOT',
 					'TRUE','FALSE',
-					'IF','FOR','WHILE','REPEAT',
+					'IF','FOR','WHILE','REPEAT','ELSE',
 					'EQUALS','LESS','GREATER','GREATER_OR_EQUAL','LESS_OR_EQUAL','NOT_EQUAL',
-					'DECLARATOR', 'BEGIN', 'END', 'PROGRAM',
+					'DECLARATOR','BEGIN','END','PROGRAM','TYPE','CONST','PROCEDURE','FUNCTION',
 					'WRITE', 'WRITELN', 'READLN', 'READ', 'SEMICOLON', 'COMMA', 'COLON',
 					'COMMENT', 'STRING','DOT','THEN')
 
@@ -62,7 +65,7 @@ def t_VAR(t):
 	return t
 
 def t_CHAR(t):
-	r'[a-zA-Z]'
+	r'(\'[\w]\') | (\"[\w]\")'
 	return t
 
 def t_REAL(t):
