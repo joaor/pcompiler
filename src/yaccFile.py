@@ -7,50 +7,16 @@ from ply import yacc
 
 from lexFile import tokens
 
-__var_names = {}
+#def p_program(t):
+#	'program : program_heading SEMICOLON block DOT'
 
-def p_assign_statement(t):
-	'assign_statement : VAR EQUALS statement'
-	__var_names[t[1]] = t[3]
+def p_program_heading(t):
+	'''program_heading : PROGRAM VAR
+				    | PROGRAM VAR LEFT_PAREN identifier_list RIGHT_PAREN'''
 
-def p_statement_plus(t):
-	'statement : statement ADD_OP term'
-	t[0] = t[1] + t[3]
-
-def p_statement_minus(t):
-	'statement : statement SUB_OP term'
-	t[0] = t[1] - t[3]
-
-def p_statement_term(t):
-	'statement : term'
-	t[0] = t[1]
-
-def p_term_times(t):
-	'term : term MUL_OP factor'
-	t[0] = t[1] * t[3]
-
-def p_term_div(t):
-	'term : term DIV_OP factor'
-	t[0] = t[1] / t[3]
-
-def p_term_factor(t):
-	'term : factor'
-	t[0] = t[1]
-
-def p_factor_num(t):
-	'factor : INTEGER'
-	t[0] = t[1]
-
-def p_factor_var(t):
-	'factor : VAR'
-	if __var_names.has_key(t[1]):
-		t[0] = __var_names[t[1]]
-	else:
-		print "Undefined Variable", t[1], "in line no.", t.lineno(1)
-
-def p_factor_expr(t):
-	'factor : LEFT_PAREN statement RIGHT_PAREN'
-	t[0] = t[2]
+def p_identifier_list(t):
+	'''identifier_list : identifier_list COMMA VAR
+				    | VAR'''
 
 # Error rule for syntax errors
 def p_error(t):
