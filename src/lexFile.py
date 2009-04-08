@@ -1,31 +1,36 @@
 from ply import lex
 
-reserved = { 'and' 			:	'AND',
-							'or'			:	'OR',
-							'not'			:	'NOT',
-							'if'			:	'IF',
-							'for'			:	'FOR',
-							'while'		:	'WHILE',
-							'repeat'	:	'REPEAT',
-							'mod'			:	'MOD',
-							'div'			:	'DIV',
-							'true'		:	'TRUE',
-							'false'		:	'FALSE',
-							'program'	:	'PROGRAM',
-							'begin'		:	'BEGIN',
-							'end'			:	'END',
-							'writeln'	:	'WRITELN',
-							'write'		:	'WRITE',
-							'readln'	:	'READLN',
-							'read'		:	'READ',
-							'then'		:	'THEN',
-							'type'		:	'TYPE',
-							'const'		:	'CONST',
-							'else'		:	'ELSE',
-							'procedure'	:	'PROCEDURE',
-							'function'	:	'FUNCTION'}
+#dicionario de palavras reservadas
+reserved = {
+	'and' 		:	'AND',
+	'or'			:	'OR',
+	'not'		:	'NOT',
+	'if'			:	'IF',
+	'for'		:	'FOR',
+	'while'		:	'WHILE',
+	'repeat'		:	'REPEAT',
+	'mod'		:	'MOD',
+	'div'		:	'DIV',
+	'true'		:	'TRUE',
+	'false'		:	'FALSE',
+	'program'		:	'PROGRAM',
+	'begin'		:	'BEGIN',
+	'end'		:	'END',
+	'writeln'		:	'WRITELN',
+	'write'		:	'WRITE',
+	'readln'		:	'READLN',
+	'read'		:	'READ',
+	'then'		:	'THEN',
+	'type'		:	'TYPE',
+	'const'		:	'CONST',
+	'else'		:	'ELSE',
+	'procedure'	:	'PROCEDURE',
+	'function'	:	'FUNCTION',
+	'in'			:	'IN',
+	'nil'		:	'NIL'
+}
 
-# List of token names
+#Lista de tokens
 tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
 					'ADD_OP','SUB_OP','MUL_OP','DIV_OP','MOD','DIV',
 					'LEFT_PAREN','RIGHT_PAREN',
@@ -35,13 +40,14 @@ tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
 					'EQUALS','LESS','GREATER','GREATER_OR_EQUAL','LESS_OR_EQUAL','NOT_EQUAL',
 					'DECLARATOR','BEGIN','END','PROGRAM','TYPE','CONST','PROCEDURE','FUNCTION',
 					'WRITE', 'WRITELN', 'READLN', 'READ', 'SEMICOLON', 'COMMA', 'COLON',
-					'COMMENT', 'STRING','DOT','THEN')
+					'COMMENT', 'STRING','DOT','THEN','EXP','NIL','IN')
 
-# Regular statement rules for tokens.
+#Expressoes regulares para cada token
 t_EQUALS = r'='
 t_ADD_OP = r'\+'
 t_SUB_OP = r'-'
 t_MUL_OP = r'\*'
+t_EXP = r'\*\*'
 t_DIV_OP = r'/'
 t_LEFT_PAREN = r'\('
 t_RIGHT_PAREN = r'\)'
@@ -61,7 +67,7 @@ t_DOT = r'\.'
 def t_VAR(t):
 	r'[a-zA-Z_][\w_]*'
 	if t.value.lower() in reserved:
-		t.type = reserved.get(t.value.lower())    # Check for reserved words
+		t.type = reserved.get(t.value.lower())
 	return t
 
 def t_CHAR(t):
@@ -72,7 +78,6 @@ def t_REAL(t):
 	r'[0-9]+\.[0-9]+'
 	return t
 
-# A regular statement rule with some action code.
 def t_INTEGER(t):
     r'[0-9]+'
     try:
@@ -82,31 +87,24 @@ def t_INTEGER(t):
     t.value = 0
     return t
 
-
-# Define a rule so that we can track line numbers.
 def t_newline(t):
     r'\n+'
     t.lineno += len(t.value)
 
-# A string containing ignored characters (spaces and tabs).
+#Caracteres igorados
 t_ignore  = ' \t'
 
-# Error handling rule
+#Caso haja erro
 def t_error(t):
     print "Illegal character '%s'" % t.value[0]
     t.skip(1)
 
-# Build the lexer
 lex.lex()
 
 
 if __name__=="__main__":
-	# Get the input
 	data = raw_input()
-
 	lex.input(data)
-
-	# Tokenize
 	while 1 :
 		   tok = lex.token()
 		   if not tok :
