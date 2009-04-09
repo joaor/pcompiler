@@ -27,7 +27,8 @@ reserved = {
 	'procedure'	:	'PROCEDURE',
 	'function'	:	'FUNCTION',
 	'in'			:	'IN',
-	'nil'		:	'NIL'
+	'nil'		:	'NIL',
+	'var'		:	'VAR'
 }
 
 #Lista de tokens
@@ -40,7 +41,7 @@ tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
 					'EQUALS','LESS','GREATER','GREATER_OR_EQUAL','LESS_OR_EQUAL','NOT_EQUAL',
 					'DECLARATOR','BEGIN','END','PROGRAM','TYPE','CONST','PROCEDURE','FUNCTION',
 					'WRITE', 'WRITELN', 'READLN', 'READ', 'SEMICOLON', 'COMMA', 'COLON',
-					'COMMENT', 'STRING','DOT','THEN','EXP','NIL','IN')
+					'COMMENT', 'STRING','DOT','THEN','EXP','NIL','IN','IDENTIFIER')
 
 #Expressoes regulares para cada token
 t_EQUALS = r'='
@@ -64,7 +65,7 @@ t_COMMENT = r' (\{ [^\}]* \}) | (\(\* [^(\*\))]* \*\))'
 t_STRING = r" (\' [^\']* \') | (\" [^\"]* \") "
 t_DOT = r'\.'
 
-def t_VAR(t):
+def t_IDENTIFIER(t):
 	r'[a-zA-Z_][\w_]*'
 	if t.value.lower() in reserved:
 		t.type = reserved.get(t.value.lower())
