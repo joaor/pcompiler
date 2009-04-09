@@ -28,7 +28,8 @@ reserved = {
 	'function'	:	'FUNCTION',
 	'in'			:	'IN',
 	'nil'		:	'NIL',
-	'var'		:	'VAR'
+	'var'		:	'VAR',
+	'do'			:	'DO'
 }
 
 #Lista de tokens
@@ -41,7 +42,7 @@ tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
 					'EQUALS','LESS','GREATER','GREATER_OR_EQUAL','LESS_OR_EQUAL','NOT_EQUAL',
 					'DECLARATOR','BEGIN','END','PROGRAM','TYPE','CONST','PROCEDURE','FUNCTION',
 					'WRITE', 'WRITELN', 'READLN', 'READ', 'SEMICOLON', 'COMMA', 'COLON',
-					'COMMENT', 'STRING','DOT','THEN','EXP','NIL','IN','IDENTIFIER')
+					'COMMENT', 'STRING','DOT','THEN','EXP','NIL','IN','IDENTIFIER','DO')
 
 #Expressoes regulares para cada token
 t_EQUALS = r'='

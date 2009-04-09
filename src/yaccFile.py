@@ -3,6 +3,7 @@ from lexFile import tokens
 
 #Estrutura do programa e o seu bloco de codigo---------------------------------
 def p_program(t):
+	#program a;  .
 	'program : program_heading SEMICOLON block DOT'
 
 def p_block(t):
@@ -110,7 +111,7 @@ def p_function_heading(t):
 	 					| FUNCTION IDENTIFIER formal_parameter_list COLON IDENTIFIER'''
 
 
-#Corpo das funcoes e procedimentos
+#Corpo das funcoes e procedimentos------------------------------------------------------
 def p_formal_parameter_list(t):
 	'formal_parameter_list : LEFT_PAREN formal_parameter_section_list RIGHT_PAREN'
 
@@ -124,6 +125,59 @@ def p_formal_parameter_section(t):
  							| procedure_heading
  							| function_heading'''
 
+#CONJUNTO DE VARIOS STATEMENTS----------------------------------------------------------------
+def p_compound_statement(t):
+	'compound_statement : BEGIN statement_sequence END'
+
+def p_statement_sequence(t):
+	'''statement_sequence 	: statement_sequence SEMICOLON statement
+ 						| statement'''
+
+def p_statement(t):
+	'''statement 	: open_statement
+ 				| closed_statement'''
+
+def p_closed_statement(t):
+	'''closed_statement : assignment_statement
+ 					| procedure_statement
+ 					| compound_statement
+ 					| repeat_statement
+ 					| closed_if_statement
+ 					| closed_while_statement
+ 					| closed_for_statement
+ 					| '''
+
+def p_open_statement(t):
+	'''open_statement 	: open_if_statement
+ 					| open_while_statement
+ 					| open_for_statement'''
+
+
+#CADA STATEMENT----------------------------------------------------------------------------------
+def p_repeat_statement(t):
+	'repeat_statement : REPEAT statement_sequence UNTIL boolean_expression'
+
+def p_open_while_statement(t):
+	'open_while_statement : WHILE boolean_expression DO open_statement'
+
+def p_closed_while_statement(t):
+	'closed_while_statement : WHILE boolean_expression DO closed_statement'
+
+def p_open_for_statement(t):
+	'open_for_statement : FOR control_variable DECLARATOR initial_value direction final_value DO open_statement'
+
+def p_closed_for_statement(t):
+	'closed_for_statement : FOR control_variable DECLARATOR initial_value direction final_value DO closed_statement'
+
+def p_open_if_statement(t):
+	''''open_if_statement 	: IF boolean_expression THEN statement
+ 						| IF boolean_expression THEN closed_statement ELSE open_statement'''
+
+def p_closed_if_statement(t):
+	'closed_if_statement : IF boolean_expression THEN closed_statement ELSE closed_statement'
+
+def p_assignment_statement(t):
+	'assignment_statement : variable_access DECLARATOR expression'
 
 #Alguns conjuntos de operacoes--------------------------------------
 def p_unsigned_constant(t):
