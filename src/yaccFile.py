@@ -7,7 +7,7 @@ def p_program(t):
 	'program : program_heading SEMICOLON block DOT'
 
 def p_block(t):
-	'block : constant_definition_part variable_declaration_part procedure_and_function_declaration_part'
+	'block : constant_definition_part variable_declaration_part procedure_and_function_declaration_part compound_statement'
 
 
 #Declaracao do heading do programa------------------------------------------------
@@ -125,7 +125,7 @@ def p_formal_parameter_section(t):
  							| procedure_heading
  							| function_heading'''
 
-#CONJUNTO DE VARIOS STATEMENTS----------------------------------------------------------------
+#Statements----------------------------------------------------------------------------------
 def p_compound_statement(t):
 	'compound_statement : BEGIN statement_sequence END'
 
@@ -152,32 +152,95 @@ def p_open_statement(t):
  					| open_while_statement
  					| open_for_statement'''
 
+#While dentro do for -> program a; begin for count:=1 downto 100 do begin while a<6 do count:=count+1; end; end.
 
-#CADA STATEMENT----------------------------------------------------------------------------------
+#REPEAT e WHILE---------------------------------------------------------------------------------- 
+#program a(d,c); var a:integer; begin a:=1; repeat a:=a+1; until a=6; end.
 def p_repeat_statement(t):
-	'repeat_statement : REPEAT statement_sequence UNTIL boolean_expression'
+	'repeat_statement : REPEAT statement_sequence UNTIL expression'
 
+#program a; begin a:=5; while a<6 do a:=a+1; end.
+#program a; begin a:=5; while a<6 do begin a:=a+1; end; end.
 def p_open_while_statement(t):
-	'open_while_statement : WHILE boolean_expression DO open_statement'
+	'open_while_statement : WHILE expression DO open_statement'
 
 def p_closed_while_statement(t):
-	'closed_while_statement : WHILE boolean_expression DO closed_statement'
+	'closed_while_statement : WHILE expression DO closed_statement'
 
+#FOR----------------------------------------------------------------------------------------------------
+#program a; var sum:integer; begin sum:=0; for count:=1 to 100 do sum:=sum + count; end.
 def p_open_for_statement(t):
-	'open_for_statement : FOR control_variable DECLARATOR initial_value direction final_value DO open_statement'
+	'open_for_statement : FOR IDENTIFIER DECLARATOR expression direction expression DO open_statement'
 
 def p_closed_for_statement(t):
-	'closed_for_statement : FOR control_variable DECLARATOR initial_value direction final_value DO closed_statement'
+	'closed_for_statement : FOR IDENTIFIER DECLARATOR expression direction expression DO closed_statement'
 
+def p_direction(t):
+	'''direction 	: TO
+ 				| DOWNTO'''
+
+#IF e atribuicao de valores a variaveis-----------------------------------------------------------------------
+# program a; begin a:=0; b:=1; if a=b then begin a:=1 end; end.
 def p_open_if_statement(t):
-	''''open_if_statement 	: IF boolean_expression THEN statement
- 						| IF boolean_expression THEN closed_statement ELSE open_statement'''
+	'''open_if_statement 	: IF expression THEN statement
+ 						| IF expression THEN closed_statement ELSE open_statement'''
 
 def p_closed_if_statement(t):
-	'closed_if_statement : IF boolean_expression THEN closed_statement ELSE closed_statement'
+	'closed_if_statement : IF expression THEN closed_statement ELSE closed_statement'
 
 def p_assignment_statement(t):
-	'assignment_statement : variable_access DECLARATOR expression'
+	'assignment_statement : IDENTIFIER DECLARATOR expression'
+
+#chamada de procedimentos----------------------------------------------------------------------------
+#program a; begin a(d); end.
+def p_procedure_statement(t):
+	'''procedure_statement 	: IDENTIFIER params
+ 						| IDENTIFIER'''
+
+def p_params(t):
+	'params : LEFT_PAREN actual_parameter_list RIGHT_PAREN'
+
+def p_actual_parameter_list(t):
+	'''actual_parameter_list : actual_parameter_list COMMA actual_parameter
+ 						| actual_parameter'''
+
+def p_actual_parameter(t):
+	'''actual_parameter : expression
+ 					| expression COLON expression
+ 					| expression COLON expression COLON expression'''
+
+#expressoes legais nos statements--------------------------------------------------------------------
+def p_expression(t):
+	'''expression 	: simple_expression
+ 				| simple_expression relop simple_expression'''
+
+def p_simple_expression(t):
+	'''simple_expression 	: term
+ 						| simple_expression addop term'''
+
+def p_term(t):
+	'''term 	: factor
+ 			| term mulop factor'''
+
+def p_factor(t):
+	'''factor 	: sign factor
+ 				| exponentiation'''
+
+def p_exponentiation(t):
+	'''exponentiation 	: primary
+ 					| primary EXP exponentiation'''
+
+def p_primary(t):
+	'''primary 	: IDENTIFIER
+ 				| unsigned_constant
+ 				| function_designator
+ 				| LEFT_PAREN expression RIGHT_PAREN
+ 				| NOT primary'''
+
+def p_function_designator(t):   #functions with no params will be handled by plain identifier
+	'function_designator : IDENTIFIER params'
+
+
 
 #Alguns conjuntos de operacoes--------------------------------------
 def p_unsigned_constant(t):
