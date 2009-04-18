@@ -436,6 +436,16 @@ def p_error(t):
 
 yacc.yacc()
 
+def display(arv):
+	if type(arv) == type("") or arv == None:
+		print arv
+		return
+
+	print arv.type
+	for i in arv.children:
+		display(i)
+
+
 while 1:
 
 	try:
@@ -444,7 +454,8 @@ while 1:
 		break
 	if not s:
 		continue
-	print yacc.parse(s)
+	display(yacc.parse(s))
+	
 
 
 
