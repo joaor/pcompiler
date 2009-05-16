@@ -347,7 +347,7 @@ def p_expression(t):
 	if len(t)==2:
 		t[0] = AST("expression", [t[1]] )
 	else:
-		t[0] = AST("program", [t[1],t[2],t[3]] )
+		t[0] = AST("expression", [t[1],t[2],t[3]] )
 
 def p_simple_expression(t):
 	'''simple_expression 	: term
@@ -390,7 +390,7 @@ def p_primary(t):
 	if len(t)==2:
 		t[0] = AST("primary", [t[1]] )
 	else:
-		t[0] = AST("program", [t[2]] )
+		t[0] = AST("primary", [t[2]] )
 
 def p_function_designator(t):   #functions with no params will be handled by plain identifier
 	'function_designator : IDENTIFIER params'
