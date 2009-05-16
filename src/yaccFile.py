@@ -436,14 +436,16 @@ def p_error(t):
 
 yacc.yacc()
 
-def display(arv):
+def display(arv,j):
 	if type(arv) == type("") or arv == None:
 		print arv
 		return
-
-	print arv.type
+	j+=1
+	print arv.type + str(j)
 	for i in arv.children:
-		display(i)
+		print "CHAMEI " + str(j)
+		display(i,j)
+
 
 
 while 1:
@@ -454,7 +456,8 @@ while 1:
 		break
 	if not s:
 		continue
-	display(yacc.parse(s))
+	#display(yacc.parse(s),0)
+	yacc.parse(s)
 	
 
 
