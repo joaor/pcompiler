@@ -210,8 +210,8 @@ def p_formal_parameter_section_list(t):
 		t[0] = AST("formal_parameter_section_list", [t[1],t[3]] )
 
 def p_formal_parameter_section(t):
-	'''formal_parameter_section 	: identifier_list COLON IDENTIFIER
- 							| VAR identifier_list COLON IDENTIFIER
+	'''formal_parameter_section 	: identifier_list COLON type_denoter
+ 							| VAR identifier_list COLON type_denoter
  							| procedure_heading
  							| function_heading'''
 	if len(t)==2:

@@ -3,10 +3,8 @@ from stack import *
 class Display():
 	def __init__(self):
 		self.stack = Stack()
-		#self.add_to_stack()
 		
 	def add_to_stack(self):
-		#print 'quero criar novo ambiente'
 		self.stack.add_frame(Table())
 		self.table = self.stack[-1][1]
 
@@ -20,7 +18,11 @@ class Display():
 		if node.type == 'block':
 			self.add_to_stack()
 			
-		if node.type == 'variable_declaration_part':
+		if node.type == 'formal_parameter_section_list':
+			for	child in node.children:
+				self.var_subtree(child)
+			
+		elif node.type in 'variable_declaration_part':
 			for	child in node.children:
 				self.var_subtree(child)
 

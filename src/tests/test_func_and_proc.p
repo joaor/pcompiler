@@ -1,15 +1,15 @@
 program test3;
-var A,a : integer;
+var A : integer;
 
 procedure ScopeInner;
-var P,p,p,p : integer;
+var P : integer;
 begin
 	A := 10;
 	writeln(A);
 end;
 
 function Summation (num : integer) : integer;
-var f ,F : integer;
+var f : integer;
 begin
   	if num = 1 then
     		Summation := 1
