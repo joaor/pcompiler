@@ -12,12 +12,18 @@ def p_program(t):
 def p_block(t):
 	'block : constant_definition_part variable_declaration_part procedure_and_function_declaration_part compound_statement'
 	t[0] = AST("block", [t[1],t[2],t[3],t[4]] )
+	
+#auxiliar para conseguir distinguir nomes de programa, funcao e procedimentos
+def p_block_name(t):
+	'block_name : IDENTIFIER'
+	
+	t[0] = AST("block_name", [t[1]])
 
 
 #Declaracao do heading do programa------------------------------------------------
 def p_program_heading(t):
-	'''program_heading : PROGRAM IDENTIFIER
-				    | PROGRAM IDENTIFIER LEFT_PAREN identifier_list RIGHT_PAREN'''
+	'''program_heading : PROGRAM block_name
+				    | PROGRAM block_name LEFT_PAREN identifier_list RIGHT_PAREN'''
 	if len(t)==3:	
 		t[0] = AST("program_heading", [t[2]] )
 	else:
@@ -162,7 +168,7 @@ def p_proc_or_func_declaration(t):
 #Declaracao de procedimentos-------------------------------------------
 def p_procedure_declaration(t):
 	#procedure a; ;
-	'''procedure_declaration : PROCEDURE IDENTIFIER SEMICOLON block
+	'''procedure_declaration : PROCEDURE block_name SEMICOLON block
 						| procedure_heading SEMICOLON block'''
 	if len(t)==5:
 		t[0] = AST("procedure_declaration", [t[2],t[4]] )
@@ -171,14 +177,14 @@ def p_procedure_declaration(t):
 
 def p_procedure_heading(t):
 	#procedure a(c,v : real); ;
-	'''procedure_heading 	: PROCEDURE IDENTIFIER formal_parameter_list'''
+	'''procedure_heading 	: PROCEDURE block_name formal_parameter_list'''
 	t[0] = AST("procedure_heading", [t[2],t[3]] )
 
 
 #Declaracao de funcoes---------------------------------------------------------
 def p_function_declaration(t):
 	#funcao a;  ;-> nao devolve nada
-	'''function_declaration 	: FUNCTION IDENTIFIER SEMICOLON block
+	'''function_declaration 	: FUNCTION block_name SEMICOLON block
  						| function_heading SEMICOLON block'''
 	if len(t)==5:
 		t[0] = AST("function_declaration", [t[2],t[4]] )
@@ -188,8 +194,8 @@ def p_function_declaration(t):
 def p_function_heading(t):
 	#funcao a: real;  ; -> devolve real
 	#funcao b(a,b : real ; VAR g:integer ) : real;  ;  -> devolve real, mas tem argumentos
-	'''function_heading 	: FUNCTION IDENTIFIER COLON IDENTIFIER 
-	 					| FUNCTION IDENTIFIER formal_parameter_list COLON IDENTIFIER'''
+	'''function_heading 	: FUNCTION block_name COLON IDENTIFIER 
+	 					| FUNCTION block_name formal_parameter_list COLON IDENTIFIER'''
 	if len(t)==5:
 		t[0] = AST("function_heading", [t[2],t[4]] )
 	else:

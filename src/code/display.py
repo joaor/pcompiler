@@ -1,70 +1,98 @@
 from stack import *
-
-class Display():
-	def __init__(self):
-		self.stack = Stack()
-		
-	def add_to_stack(self):
-		self.stack.add_frame(Table())
-		self.table = self.stack[-1][1]
-
-
-	def display(self, node):
-		if type(node) == type("") or node == None:
-			#print node
-			return
-
-		#print node.type
-		if node.type == 'block':
-			self.add_to_stack()
-			
-		if node.type == 'formal_parameter_section_list':
-			for	child in node.children:
-				self.var_subtree(child)
-			
-		elif node.type in 'variable_declaration_part':
-			for	child in node.children:
-				self.var_subtree(child)
-
-		else:
-			for child in node.children:
-				self.display(child)
+	
+def add_to_stack( t):
+	global table
+	stack.add_frame(t)
+	table = stack[-1]
+	
+def display(node):
+	if type(node) == type("") or node == None:
+		print node
+		return
+	print node.type
+	for child in node.children:
+			display(child)
 
 
-	def type_denoter_subtree(self, node):
-		if node == None:		return
 
-		if type(node) == type(""):
-											
+
+def run_tree( node, depth=-1, flag=False):
+	if node == None:	return None
+	
+	if type(node) == type(""):
+		if node.upper() not in key_words: 	
 			try:
-				self.table.add_type(node.upper())
-			except VariableDeclarationError, e:
-				print "Type %s doesn't have a match" %e
-			return node
+				stack.find(node.upper(), depth)
+			except VariableNotDefined, e:
+				print e	
+		return None
 
+
+	if node.type in ['procedure_declaration', 'function_declaration']:
+		global nm
+		depth += 1
+		add_to_stack(Table(depth))
+		flag = True
+
+	elif node.type == 'block' and not flag:
+		global nm
+		depth += 1
+		add_to_stack(Table(depth, nm))
+
+	if node.type in ['variable_declaration_part','formal_parameter_section_list']:
+		for	child in node.children:
+			var_subtree(child)
+			
+	elif node.type == 'block_name':
+		nm = node.children[0]
+		if flag:
+			table.name = nm
+
+	else:
 		for child in node.children:
-			t = self.type_denoter_subtree(child)
-		self.table.check_queue(t.upper())
+			block = run_tree(child, depth,flag)
 
 
 
-	def var_subtree(self, node):
-		if node == None:		return
+def type_denoter_subtree( node):
+	if node == None:		return
 
-		if type(node) == type(""):
-		
-			try:
-				self.table.queue_identifier(node.lower())
-			except VariableAlreadyDefined, e:
-				print e
-			return
+	if type(node) == type(""):										
+		try:
+			table.add_type(node.upper())
+		except VariableDeclarationError, e:
+			print "Type %s doesn't have a match" %e
+		return node
 
-		if node.type == 'type_denoter':
-			for child in node.children:
-				self.type_denoter_subtree(child)
-			return
+	for child in node.children:
+		t = type_denoter_subtree(child)
+	table.check_queue(t.upper())
 
+
+
+def var_subtree( node):
+	if node == None:		return
+
+	if type(node) == type(""):
+		try:
+			table.queue_identifier(node.upper())
+		except VariableAlreadyDefined, e:
+			print e
+		return
+
+	if node.type == 'type_denoter':
 		for child in node.children:
-			self.var_subtree(child)
+			type_denoter_subtree(child)
+		return
 
+	for child in node.children:
+		var_subtree(child)
+
+
+
+pf_flag = False
+stack = Stack()
+table = None
+key_words = ['WRITELN', 'WRITE', 'READLN', 'READ']
+nm = ''
 

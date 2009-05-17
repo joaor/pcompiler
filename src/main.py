@@ -4,10 +4,10 @@ from parser.yaccFile import *
 
 
 s = get_program()
-d = Display()
 
 yacc.yacc()
-d.display(yacc.parse(s))
+run_tree(yacc.parse(s))
+#display(yacc.parse(s))
 
-print d.stack.length()
-print d.stack.display()
+print stack.length()
+print stack.display()
