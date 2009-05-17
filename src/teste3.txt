@@ -1,0 +1,1 @@
+PROGRAM teste3; VAR j,z : (REAL,INTEGER); i : INTEGER; BEGIN END.
