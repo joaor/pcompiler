@@ -443,22 +443,14 @@ def display(arv,j):
 	j+=1
 	print arv.type + str(j)
 	for i in arv.children:
-		print "CHAMEI " + str(j)
+		#print "CHAMEI " + str(j)
 		display(i,j)
 
+from get_program import get_program
 
-
-while 1:
-
-	try:
-		s = raw_input('enter > ')
-	except EOFError:
-		break
-	if not s:
-		continue
-	#display(yacc.parse(s),0)
-	yacc.parse(s)
-	
-
+s = get_program()
+print s
+display(yacc.parse(s),0)
+#yacc.parse(s)
 
 
