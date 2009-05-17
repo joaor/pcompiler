@@ -7,7 +7,6 @@ class Display():
 
 		self.stack.add_frame(self.table)
 
-
 	def display(self, node):
 		if type(node) == type("") or node == None:
 			#print node

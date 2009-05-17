@@ -438,20 +438,11 @@ def p_error(t):
 	print "Syntax error in input!"
 
 
-def display(arv,j):
-	if type(arv) == type("") or arv == None:
-		print arv
-		return
-	j+=1
-	print arv.type + str(j)
-	for i in arv.children:
-		#print "CHAMEI " + str(j)
-		display(i,j)
-
 from get_program import get_program
 
 s = get_program()
-display(yacc.parse(s),0)
+d = Display()
+d.display(yacc.parse(s),0)
 #yacc.parse(s)
 
 
