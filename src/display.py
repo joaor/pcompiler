@@ -3,8 +3,8 @@ from stack import *
 class Display():
 	def __init__(self):
 		self.stack = Stack()
+		
 		self.table = Table()
-
 		self.stack.add_frame(self.table)
 
 	def display(self, node):
@@ -13,7 +13,10 @@ class Display():
 			return
 
 		#print node.type
-
+		if node.type == 'procedure_or_function_declaration_part':
+			self.table = Table()
+			self.stak.add_frame(self.table)
+			
 		if node.type == 'variable_declaration_part':
 			for	child in node.children:
 				self.var_subtree(child)

@@ -442,7 +442,9 @@ from get_program import get_program
 
 s = get_program()
 d = Display()
-d.display(yacc.parse(s),0)
+yacc.yacc()
+d.display(yacc.parse(s))
+print d.stack.length()
 #yacc.parse(s)
 
 

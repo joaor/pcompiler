@@ -34,14 +34,18 @@ class Stack():
 
 
 	def add_frame(self, frame):
-		self.stack.push([self.n, frame])
+		self.stack.append([self.n, frame])
 		self.n += 1
 
 
-	def search(identifier):
+	def search(self,identifier):
 		for i in range(len(self.stack)-1,-1,-1):
 			t = self.stack[i].find(identifier)
 			if t:	return t
 		return None
+		
+	
+	def length(self):
+		return len(self.stack)
 
 
