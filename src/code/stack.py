@@ -1,11 +1,15 @@
+from excep.variable_already_defined import *
+
 class Table():
 	def __init__(self):
 		self.hash = {}
 		self.list = []
 
 	def queue_identifier(self,id):
-		self.list.append(id)
-
+		if id not in self.list and id not in self.hash:
+			self.list.append(id)
+		else:
+			raise VariableAlreadyDefined(id)
 
 	def add_type_to_ids(self,type):
 		for i in self.list:

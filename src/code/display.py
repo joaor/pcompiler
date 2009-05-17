@@ -3,12 +3,13 @@ from stack import *
 class Display():
 	def __init__(self):
 		self.stack = Stack()
-		self.add_to_stack()
+		#self.add_to_stack()
 		
 	def add_to_stack(self):
 		#print 'quero criar novo ambiente'
 		self.stack.add_frame(Table())
 		self.table = self.stack[-1][1]
+
 
 	def display(self, node):
 		if type(node) == type("") or node == None:
@@ -16,7 +17,7 @@ class Display():
 			return
 
 		#print node.type
-		if node.type == 'proc_or_func_declaration':
+		if node.type == 'block':
 			self.add_to_stack()
 			
 		if node.type == 'variable_declaration_part':
@@ -45,7 +46,10 @@ class Display():
 		if node == None:		return
 
 		if type(node) == type(""):
-			self.table.queue_identifier(node.lower())
+			try:
+				self.table.queue_identifier(node.lower())
+			except VariableAlreadyDefined, e:
+				print e
 			return
 
 		if node.type == 'type_denoter':
