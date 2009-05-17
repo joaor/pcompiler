@@ -2,6 +2,9 @@ from ply import yacc
 from lexFile import tokens
 from ast import *
 
+from stack import *
+from display import *
+
 #Estrutura do programa e o seu bloco de codigo---------------------------------
 def p_program(t):
 	#program a;  .
@@ -436,18 +439,11 @@ def p_error(t):
 
 yacc.yacc()
 
-def display(arv,j):
-	if type(arv) == type("") or arv == None:
-		print arv
-		return
-	j+=1
-	print arv.type + str(j)
-	for i in arv.children:
-		print "CHAMEI " + str(j)
-		display(i,j)
 
 
 
+
+d = Display(Table())
 while 1:
 
 	try:
@@ -456,9 +452,11 @@ while 1:
 		break
 	if not s:
 		continue
-	#display(yacc.parse(s),0)
-	yacc.parse(s)
-	
 
+	d.display(yacc.parse(s))
+	
+	print d.table.hash
+
+	yacc.parse(s)
 
 
