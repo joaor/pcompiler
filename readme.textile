@@ -1,0 +1,4 @@
+Projecto de Compiladores: Compilador de Pascal em Python
+
+João Alexandre Rodrigues
+Diogo Laginha 
