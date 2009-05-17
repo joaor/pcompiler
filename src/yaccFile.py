@@ -2,7 +2,6 @@ from ply import yacc
 from lexFile import tokens
 from ast import *
 
-from stack import *
 from display import *
 
 #Estrutura do programa e o seu bloco de codigo---------------------------------
@@ -445,6 +444,7 @@ d = Display()
 yacc.yacc()
 d.display(yacc.parse(s))
 print d.stack.length()
+print d.stack.display()
 #yacc.parse(s)
 
 

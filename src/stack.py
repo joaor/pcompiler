@@ -36,6 +36,7 @@ class Stack():
 	def add_frame(self, frame):
 		self.stack.append([self.n, frame])
 		self.n += 1
+		#print 'foi.m adicionado nova frame'
 
 
 	def search(self,identifier):
@@ -47,5 +48,13 @@ class Stack():
 	
 	def length(self):
 		return len(self.stack)
+		
+	def __getitem__(self, p):
+		return self.stack[p]
+
+	def display(self):
+		for frame in self.stack:
+			print frame[0], frame[1].hash
+				
 
 

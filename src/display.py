@@ -3,9 +3,12 @@ from stack import *
 class Display():
 	def __init__(self):
 		self.stack = Stack()
+		self.add_to_stack()
 		
-		self.table = Table()
-		self.stack.add_frame(self.table)
+	def add_to_stack(self):
+		#print 'quero criar novo ambiente'
+		self.stack.add_frame(Table())
+		self.table = self.stack[-1][1]
 
 	def display(self, node):
 		if type(node) == type("") or node == None:
@@ -13,9 +16,8 @@ class Display():
 			return
 
 		#print node.type
-		if node.type == 'procedure_or_function_declaration_part':
-			self.table = Table()
-			self.stak.add_frame(self.table)
+		if node.type == 'proc_or_func_declaration':
+			self.add_to_stack()
 			
 		if node.type == 'variable_declaration_part':
 			for	child in node.children:
