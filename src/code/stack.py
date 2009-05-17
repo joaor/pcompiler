@@ -1,4 +1,5 @@
 from excep.variable_already_defined import *
+from excep.variable_declaration_error import *
 
 class Table():
 	def __init__(self):
@@ -18,7 +19,10 @@ class Table():
 
 
 	def add_type(self, type):
-		self.hash[self.list.pop(0)] = type
+		if self.list != []:
+			self.hash[self.list.pop(0)] = type
+		else:
+			raise VariableDeclarationError(type)
 
 
 	def find(self, identifier):
@@ -26,6 +30,9 @@ class Table():
 			return type
 		else:
 			return None
+			
+	def check_queue(self, type):
+		self.add_type_to_ids(type)
 
 
 

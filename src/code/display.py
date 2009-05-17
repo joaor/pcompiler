@@ -35,12 +35,21 @@ class Display():
 		if node == None:		return
 
 		if type(node) == type(""):
-			if n:								self.table.add_type(node.upper())
-			else:								self.table.add_type_to_ids(node.upper())
-			return
+			if n:								
+				try:
+					self.table.add_type(node.upper())
+				except VariableDeclarationError, e:
+					print "Type %s doesn't have a match" %e
+			
+			else:								
+				self.table.add_type_to_ids(node.upper())
+			
+			return node
 
 		for child in node.children:
-			self.type_denoter_subtree(child,1)
+			t = self.type_denoter_subtree(child,1)
+		
+		self.table.check_queue(t.upper())
 
 
 
