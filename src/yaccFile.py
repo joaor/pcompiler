@@ -437,26 +437,22 @@ def p_mulop(t):
 def p_error(t):
 	print "Syntax error in input!"
 
-yacc.yacc()
 
+def display(arv,j):
+	if type(arv) == type("") or arv == None:
+		print arv
+		return
+	j+=1
+	print arv.type + str(j)
+	for i in arv.children:
+		#print "CHAMEI " + str(j)
+		display(i,j)
 
+from get_program import get_program
 
+s = get_program()
+display(yacc.parse(s),0)
+#yacc.parse(s)
 
-
-d = Display()
-while 1:
-
-	try:
-		s = raw_input('enter > ')
-	except EOFError:
-		break
-	if not s:
-		continue
-
-	d.display(yacc.parse(s))
-	
-	print d.table.hash
-
-	yacc.parse(s)
 
 
