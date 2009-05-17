@@ -16,10 +16,6 @@ reserved = {
 	'program'		:	'PROGRAM',
 	'begin'		:	'BEGIN',
 	'end'		:	'END',
-	'writeln'		:	'WRITELN',
-	'write'		:	'WRITE',
-	'readln'		:	'READLN',
-	'read'		:	'READ',
 	'then'		:	'THEN',
 	'type'		:	'TYPE',
 	'const'		:	'CONST',
@@ -44,7 +40,7 @@ tokens = ('INTEGER','VAR','REAL','BOOLEAN','CHAR',
 					'IF','FOR','WHILE','REPEAT','ELSE',
 					'EQUALS','LESS','GREATER','GREATER_OR_EQUAL','LESS_OR_EQUAL','NOT_EQUAL',
 					'DECLARATOR','BEGIN','END','PROGRAM','TYPE','CONST','PROCEDURE','FUNCTION',
-					'WRITE', 'WRITELN', 'READLN', 'READ', 'SEMICOLON', 'COMMA', 'COLON',
+				 	'SEMICOLON', 'COMMA', 'COLON',
 					'COMMENT', 'STRING','DOT','THEN','EXP','NIL','IN','IDENTIFIER','DO','TO','DOWNTO','UNTIL')
 
 #Expressoes regulares para cada token
