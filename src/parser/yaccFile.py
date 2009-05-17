@@ -1,8 +1,6 @@
 from ply import yacc
 from lexFile import tokens
-from ast import *
-
-from display import *
+from lib.ast import *
 
 #Estrutura do programa e o seu bloco de codigo---------------------------------
 def p_program(t):
@@ -436,15 +434,6 @@ def p_mulop(t):
 def p_error(t):
 	print "Syntax error in input!"
 
-
-from get_program import get_program
-
-s = get_program()
-d = Display()
-yacc.yacc()
-d.display(yacc.parse(s))
-print d.stack.length()
-print d.stack.display()
 #yacc.parse(s)
 
 
