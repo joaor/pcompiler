@@ -31,24 +31,19 @@ class Display():
 				self.display(child)
 
 
-	def type_denoter_subtree(self, node, n=0):
+	def type_denoter_subtree(self, node):
 		if node == None:		return
 
 		if type(node) == type(""):
-			if n:								
-				try:
-					self.table.add_type(node.upper())
-				except VariableDeclarationError, e:
-					print "Type %s doesn't have a match" %e
-			
-			else:								
-				self.table.add_type_to_ids(node.upper())
-			
+											
+			try:
+				self.table.add_type(node.upper())
+			except VariableDeclarationError, e:
+				print "Type %s doesn't have a match" %e
 			return node
 
 		for child in node.children:
-			t = self.type_denoter_subtree(child,1)
-		
+			t = self.type_denoter_subtree(child)
 		self.table.check_queue(t.upper())
 
 
@@ -57,6 +52,7 @@ class Display():
 		if node == None:		return
 
 		if type(node) == type(""):
+		
 			try:
 				self.table.queue_identifier(node.lower())
 			except VariableAlreadyDefined, e:
