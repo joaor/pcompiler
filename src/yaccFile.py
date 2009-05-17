@@ -443,7 +443,7 @@ yacc.yacc()
 
 
 
-d = Display(Table())
+d = Display()
 while 1:
 
 	try:
