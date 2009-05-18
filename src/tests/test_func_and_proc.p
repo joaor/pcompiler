@@ -11,6 +11,7 @@ end;
 function Summation (num : integer) : integer;
 var f : integer;
 begin
+		writeln(P);
   	if num = 1 then
     		Summation := 1
   	else
@@ -22,4 +23,8 @@ begin
   	writeln(A);
   	ScopeInner;
   	writeln(A);
+  		begin
+  			write(A);
+  			write(P);
+  		end;
 end.

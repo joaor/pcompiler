@@ -3,10 +3,9 @@ from excep.variable_declaration_error import *
 from excep.variable_not_defined import *
 
 class Table():
-	def __init__(self, d, nm=None):
+	def __init__(self, nm=None):
 		self.hash = {}
 		self.list = []
-		self.depth = d
 		self.name = nm
 
 	def queue_identifier(self,id):
@@ -36,4 +35,5 @@ class Table():
 			
 	def check_queue(self, type):
 		self.add_type_to_ids(type)
+
 		

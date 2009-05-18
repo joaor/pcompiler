@@ -1,6 +1,8 @@
 from stack import *
+from table import *
+from code.proc_and_func import *
 	
-def add_to_stack( t):
+def add_to_stack(t):
 	global table
 	stack.add_frame(t)
 	table = stack[-1]
@@ -13,44 +15,45 @@ def display(node):
 	for child in node.children:
 			display(child)
 
+def find(node):
+	if node not in key_words: 	
+		try:
+			stack.find(node)
+		except VariableNotDefined, e:
+			print e
+	return None
 
 
-
-def run_tree( node, depth=-1, flag=False):
+def run_tree( node, pf_flag=False):
 	if node == None:	return None
 	
-	if type(node) == type(""):
-		if node.upper() not in key_words: 	
-			try:
-				stack.find(node.upper(), depth)
-			except VariableNotDefined, e:
-				print e	
-		return None
-
+	if type(node) == type(""):	return find(node.upper())
 
 	if node.type in ['procedure_declaration', 'function_declaration']:
-		global nm
-		depth += 1
-		add_to_stack(Table(depth))
-		flag = True
+		add_to_stack(Table())
+		pf_flag = True
 
-	elif node.type == 'block' and not flag:
+	elif node.type == 'block' and not pf_flag:
 		global nm
-		depth += 1
-		add_to_stack(Table(depth, nm))
+		add_to_stack(Table(nm))
+
 
 	if node.type in ['variable_declaration_part','formal_parameter_section_list']:
-		for	child in node.children:
+		for	child in node.children:	
 			var_subtree(child)
+		if pf_flag and node.type == 'formal_parameter_section_list':	stack.proc_func[-1].copy_params(table.hash)
 			
 	elif node.type == 'block_name':
 		nm = node.children[0]
-		if flag:
+		
+		if pf_flag:
 			table.name = nm
-
+			stack.proc_func.append( ProcAndFunc(nm) )
+			
 	else:
-		for child in node.children:
-			block = run_tree(child, depth,flag)
+		for child in node.children:	
+			block = run_tree(child, pf_flag)
+		if node.type == 'block':	stack.pop_frame()
 
 
 
@@ -64,13 +67,12 @@ def type_denoter_subtree( node):
 			print "Type %s doesn't have a match" %e
 		return node
 
-	for child in node.children:
-		t = type_denoter_subtree(child)
+	for child in node.children:		t = type_denoter_subtree(child)
 	table.check_queue(t.upper())
 
 
 
-def var_subtree( node):
+def var_subtree(node):
 	if node == None:		return
 
 	if type(node) == type(""):
@@ -81,18 +83,18 @@ def var_subtree( node):
 		return
 
 	if node.type == 'type_denoter':
-		for child in node.children:
-			type_denoter_subtree(child)
+		for child in node.children:		type_denoter_subtree(child)
 		return
 
-	for child in node.children:
-		var_subtree(child)
+	for child in node.children:		var_subtree(child)
 
 
 
-pf_flag = False
-stack = Stack()
+
 table = None
 key_words = ['WRITELN', 'WRITE', 'READLN', 'READ']
 nm = ''
+
+stack = Stack()
+
 
