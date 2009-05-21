@@ -1,6 +1,7 @@
 from excep.variable_already_defined import *
 from excep.variable_declaration_error import *
 from excep.variable_not_defined import *
+from excep.function_or_procedure_not_defined import *
 
 class Stack():
 	def __init__(self):
@@ -14,14 +15,18 @@ class Stack():
 
 	
 	#find local
-	def find(self, identifier):
+	def find_var(self, identifier):
 		for i in range(len(self.stack)-1,-1,-1):
 			if self.stack[i].find(identifier):
 				return True
-			
-		#ver se e func/proc e se o numero e tipos params coincide
-		
 		raise VariableNotDefined(identifier)
+		
+	
+	def find_pf(self, name):
+		for i in self.proc_func:
+			if i.name == name:
+				return i.params
+		raise FunctionOrProcedureNotDefined(name)
 		
 	
 	def length(self):

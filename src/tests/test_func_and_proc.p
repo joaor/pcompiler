@@ -21,7 +21,7 @@ end;
 begin
   	A := 20;
   	writeln(A);
-  	ScopeInner;
+  	ScopeInneri(A);
   	writeln(A);
   		begin
   			write(A);
