@@ -16,8 +16,6 @@ class ProcAndFunc():
 		for i in hash:
 			self.add_param(i, hash[i])
 		
-		
-		
 	def check_params(self, types):
 		for i in range(len(types)):
 			if types[i] != self.params[i][1]:
@@ -25,9 +23,8 @@ class ProcAndFunc():
 		return True
 			
 			
-	def __str__(self):
-		stri = ''
-		for i in self.params:
+	def __str__(self, stri = ''):
+		for i in self.params: 
 			stri += str(i)
-			
 		return stri
+

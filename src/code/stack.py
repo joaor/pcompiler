@@ -6,15 +6,11 @@ from excep.function_or_procedure_not_defined import *
 class Stack():
 	def __init__(self):
 		self.stack = []
-		#list of ProcAndFunction()
 		self.proc_func = []
-
 
 	def add_frame(self, frame):
 		self.stack.append(frame)
 
-	
-	#find local
 	def find_var(self, identifier):
 		for i in range(len(self.stack)-1,-1,-1):
 			type = self.stack[i].find(identifier)
@@ -22,7 +18,6 @@ class Stack():
 				return type
 		raise VariableNotDefined(identifier)
 		
-	
 	def find_pf(self, name):
 		for i in self.proc_func:
 			if i.name == name:
@@ -42,6 +37,4 @@ class Stack():
 			
 	def pop_frame(self):
 		self.stack.pop()
-				
-
 

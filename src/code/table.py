@@ -19,20 +19,16 @@ class Table():
 			self.hash[i] = type
 		self.list = []
 
-
 	def add_type(self, type):
 		if self.list != []:
 			self.hash[self.list.pop(0)] = type
 		else:
 			raise VariableDeclarationError(type)
 
-
 	def find(self, identifier):
 		if identifier in self.hash:
 			return self.hash[identifier]
-		return None
 			
 	def check_queue(self, type):
 		self.add_type_to_ids(type)
 
-		
