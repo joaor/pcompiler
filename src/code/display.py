@@ -34,7 +34,7 @@ def run_tree( node, in_function=False):
 			stack.proc_func.append( ProcAndFunc(nm) )
 			
 	elif node.type == 'function_returning':
-		stack.proc_func[-1].r_type = node.children[0].upper()
+		stack.get_pf().set_returning(node.children[0].upper())
 			
 	elif node.type in ['procedure_statement', 'function_designator']:
 		function_designator(node, stack)
@@ -134,7 +134,7 @@ def assignment_validation(node, assignment_type=None, t=None):
 	
 	elif node.type == 'function_designator':
 		t = function_designator(node, stack)
-		print t
+		
 	if t:
 		if t != assignment_type:
 			raise DifferentTypesInAssignment(t,assignment_type)

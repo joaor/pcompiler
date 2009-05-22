@@ -16,6 +16,10 @@ class Stack():
 			type = self.stack[i].find(identifier)
 			if type: 
 				return type
+				
+		if self.proc_func[-1].name == identifier:
+			return self.proc_func[-1].r_type
+			
 		raise VariableNotDefined(identifier)
 		
 	def find_pf(self, name):
@@ -37,4 +41,8 @@ class Stack():
 			
 	def pop_frame(self):
 		self.stack.pop()
+		
+	def get_pf(self):
+		return self.proc_func[-1]
+
 

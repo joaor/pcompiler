@@ -29,3 +29,6 @@ class ProcAndFunc():
 			stri += str(i)
 		return stri
 
+	def set_returning(self, t):
+		self.t_type = t
+
