@@ -2,6 +2,7 @@ from stack import *
 from table import *
 from code.proc_and_func import *
 from excep.wrong_number_of_arguments import *
+from excep.different_types_in_assignment import *
 	
 def add_to_stack(t):
 	global table
@@ -71,13 +72,21 @@ def run_tree( node, in_function=False):
 			function_calling(node)
 		except WrongNumberOfArguments, e:	print e
 		except FunctionOrProcedureNotDefined, e: print e
-		return
 			
+	elif node.type == 'assignment_statement':
+		try:
+			assignment_validation(node, find_var(node.children[0]))		
+		except DifferentTypesInAssignment, e:
+			print e
+	
 	else:
 		for child in node.children:	
 			run_tree(child, in_function)
 		if node.type == 'block':	
 			stack.pop_frame()
+
+
+
 
 
 
@@ -113,11 +122,8 @@ def params_subtree(node):
 	list=[]
 	if node == None: return
 	if type(node) == type(""):
-		try:
-			f= find_var(node)
-			if f: return [f]
-		except VariableNotDefined, e:
-			print e
+		f= find_var(node)
+		if f: return [f]
 			
 	else:		
 		for child in node.children:
@@ -150,8 +156,21 @@ def function_calling(node):
 		raise WrongNumberOfArguments(name, len(pf.params), 0)
 
 
-
-
+def assignment_validation(node, assignment_type=None, t=None):
+	if node==None or assignment_type==None: return
+	if type(node) == type(''):
+		t=find_var(node.upper())
+	
+	if t:
+		if t != assignment_type:
+			raise DifferentTypesInAssignment(t,assignment_type)
+	else:
+		for child in node.children:
+			assignment_validation(child, assignment_type)
+	
+	
+	
+	
 table = None
 key_words = ['WRITELN', 'WRITE', 'READLN', 'READ']
 nm = ''

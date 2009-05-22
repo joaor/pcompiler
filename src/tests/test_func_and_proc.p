@@ -12,6 +12,7 @@ function Summation (num : integer) : integer;
 var f : integeRi;
 begin
 		writeln(P);
+		f := num;
   	if num = 1 then
     		Summation := 1
   	else
