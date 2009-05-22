@@ -33,11 +33,11 @@ def run_tree( node, in_function=False):
 			table.name = nm
 			stack.proc_func.append( ProcAndFunc(nm) )
 			
+	elif node.type == 'function_returning':
+		stack.proc_func[-1].r_type = node.children[0].upper()
+			
 	elif node.type in ['procedure_statement', 'function_designator']:
-		try:
-			function_calling(node, stack)
-		except WrongNumberOfArguments, e:	print e
-		except FunctionOrProcedureNotDefined, e: print e
+		function_designator(node, stack)
 			
 	elif node.type == 'assignment_statement':
 		try:
@@ -96,11 +96,45 @@ def params_subtree(node):
 	return list
 	
 
+
+def function_designator(node, stack):
+	try:
+		return function_calling(node, stack)
+	except WrongNumberOfArguments, e:	print e
+	except FunctionOrProcedureNotDefined, e: print e
+
+
+def function_calling(node, stack):
+	name = node.children[0].upper()
+	pf = find_pf(name, stack)
+	
+	if not pf:	return
+	if len(node.children)>1:
+	
+		types = params_subtree(node.children[1])
+		if len(types) != len(pf.params):
+			raise WrongNumberOfArguments(name, len(pf.params), len(types))
+			
+		try:	
+			pf.check_params(types)
+		except ArgumentTypeIncompatibility, e:
+			print e
+
+		return pf.r_type
+	else:
+		raise WrongNumberOfArguments(name, len(pf.params), 0)
+
+
+
 def assignment_validation(node, assignment_type=None, t=None):
 	if node==None or assignment_type==None: return
 	if type(node) == type(''):
 		t=find_var(node.upper(), stack)
+		if t==None: return
 	
+	elif node.type == 'function_designator':
+		t = function_designator(node, stack)
+		print t
 	if t:
 		if t != assignment_type:
 			raise DifferentTypesInAssignment(t,assignment_type)

@@ -11,4 +11,4 @@ run_tree(yacc.parse(s))
 print stack.length()
 print stack.display()
 print 'number of func/proc:', len(stack.proc_func)
-for i in stack.proc_func:	print i
+for i in stack.proc_func:	print i,i.r_type

@@ -16,7 +16,7 @@ begin
   	if num = 1 then
     		Summation := 1
   	else
-    		Summation := Summation(f-1) + num
+    		f := Summation(num-1)
 end;
 
 begin
