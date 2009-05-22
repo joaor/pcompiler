@@ -96,7 +96,7 @@ def type_denoter_subtree( node):
 		try:
 			table.add_type(node.upper())
 		except VariableDeclarationError, e:
-			print "Type %s doesn't have a match" %e
+			print e
 		return node
 
 	table.check_queue( go_children(node.children, type_denoter_subtree).upper())
