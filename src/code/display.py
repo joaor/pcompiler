@@ -18,7 +18,7 @@ def display(node):
 def find_var(node):
 	if node not in key_words: 	
 		try:
-			stack.find_var(node)
+			return stack.find_var(node.upper())
 		except VariableNotDefined, e:
 			print e
 	return None
@@ -66,7 +66,11 @@ def run_tree( node, in_function=False):
 			stack.proc_func.append( ProcAndFunc(nm) )
 			
 	elif node.type in ['procedure_statement', 'function_designator']:
-		function_calling(node)
+		try:
+			function_calling(node)
+		except WrongNumberOfArguments, e:	print e
+		except FunctionOrProcedureNotDefined, e: print e
+		return
 			
 	else:
 		for child in node.children:	
@@ -104,12 +108,45 @@ def var_subtree(node):
 		go_children(node.children, var_subtree)
 
 
+def params_subtree(node):
+	list=[]
+	if node == None: return
+	if type(node) == type(""):
+		try:
+			f= find_var(node)
+			if f: return [f]
+		except VariableNotDefined, e:
+			print e
+			
+	else:		
+		for child in node.children:
+			p = params_subtree(child)
+			if p: list.extend(p)
+			
+	return list
+
+
 
 def function_calling(node):
-	n_args = find_pf(node.children[0].upper())
+	name = node.children[0].upper()
+	pf = find_pf(name)
 	
-	if n_args:
-		print 'lalalalallala',n_args, node.children[0]
+	if pf:
+				
+		if len(pf.params) and len(node.children)>1:
+			#check number of arguments
+			#try:
+			types = params_subtree(node.children[1])
+			if len(types) != len(pf.params):
+				raise WrongNumberOfArguments(name, len(pf.params), len(types))
+			else:
+				pf.check_params(types)
+		
+			#except WrongNumberOfArguments, e:
+		#		print e
+		
+		else:
+			raise WrongNumberOfArguments(name, len(pf.params), 0)
 
 
 

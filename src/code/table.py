@@ -29,9 +29,8 @@ class Table():
 
 	def find(self, identifier):
 		if identifier in self.hash:
-			return type
-		else:
-			return None
+			return self.hash[identifier]
+		return None
 			
 	def check_queue(self, type):
 		self.add_type_to_ids(type)

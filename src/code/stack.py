@@ -17,15 +17,16 @@ class Stack():
 	#find local
 	def find_var(self, identifier):
 		for i in range(len(self.stack)-1,-1,-1):
-			if self.stack[i].find(identifier):
-				return True
+			type = self.stack[i].find(identifier)
+			if type: 
+				return type
 		raise VariableNotDefined(identifier)
 		
 	
 	def find_pf(self, name):
 		for i in self.proc_func:
 			if i.name == name:
-				return i.params
+				return i
 		raise FunctionOrProcedureNotDefined(name)
 		
 	
