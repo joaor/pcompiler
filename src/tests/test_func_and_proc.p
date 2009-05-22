@@ -9,13 +9,13 @@ begin
 end;
 
 function Summation (num : integer) : integer;
-var f : integer;
+var f : integeRi;
 begin
 		writeln(P);
   	if num = 1 then
     		Summation := 1
   	else
-    		Summation := Summation(num-1) + num
+    		Summation := Summation(f-1) + num
 end;
 
 begin

@@ -1,4 +1,4 @@
-from excep.wrong_number_of_arguments import *
+from excep.argument_type_incompatibility import *
 
 class ProcAndFunc():
 	def __init__(self, nm):
@@ -21,8 +21,7 @@ class ProcAndFunc():
 	def check_params(self, types):
 		for i in range(len(types)):
 			if types[i] != self.params[i][1]:
-				return False
-				#to do raise exception 'tipos incorrectos'
+				raise ArgumentTypeIncompatibility(i+1,self.params[i][1])
 		return True
 			
 			

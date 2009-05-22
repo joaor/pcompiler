@@ -1,6 +1,7 @@
 from stack import *
 from table import *
 from code.proc_and_func import *
+from excep.wrong_number_of_arguments import *
 	
 def add_to_stack(t):
 	global table
@@ -74,7 +75,7 @@ def run_tree( node, in_function=False):
 			
 	else:
 		for child in node.children:	
-			block = run_tree(child, in_function)
+			run_tree(child, in_function)
 		if node.type == 'block':	
 			stack.pop_frame()
 
@@ -131,22 +132,22 @@ def function_calling(node):
 	name = node.children[0].upper()
 	pf = find_pf(name)
 	
-	if pf:
-				
-		if len(pf.params) and len(node.children)>1:
-			#check number of arguments
-			#try:
+	if not pf:	return
+	
+	if len(node.children)>1:
+	
+		try:
 			types = params_subtree(node.children[1])
 			if len(types) != len(pf.params):
 				raise WrongNumberOfArguments(name, len(pf.params), len(types))
 			else:
 				pf.check_params(types)
-		
-			#except WrongNumberOfArguments, e:
-		#		print e
-		
-		else:
-			raise WrongNumberOfArguments(name, len(pf.params), 0)
+	
+		except ArgumentTypeIncompatibility, e:
+			print e
+	
+	else:
+		raise WrongNumberOfArguments(name, len(pf.params), 0)
 
 
 
