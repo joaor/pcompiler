@@ -1,7 +1,7 @@
 from excep.variable_already_defined import *
 from excep.variable_declaration_error import *
 from excep.variable_not_defined import *
-from excep.wrong_number_of_types import *
+#from excep.wrong_number_of_types import *
 
 class Table():
 	def __init__(self, nm=None):
