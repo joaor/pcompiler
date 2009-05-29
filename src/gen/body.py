@@ -1,4 +1,4 @@
-f = open("c_code/output.c",'w')
+#f = open("c_code/output.c",'w')
 returncounter = 0
 
 def translate():
@@ -23,7 +23,7 @@ def translate_global_list():
 	#1- Criar um offset para cada variavel global
 	#2- Percorrer todas as variaveis globais
 	#3- Consoante o tipo de variavel:
-	'''f.write("VAR_TYPE g%d;\n", offset)''' 
+	'''f.write("VAR_TYPE g%d;\n" % offset)''' 
 	pass
 		
 def translate_block_list():
@@ -54,24 +54,24 @@ def translate_statements():
 	#Se write:
 	#Verificar se e local ou global
 	#Se global
-	'''f.write(\"%%VAR_TYPE\\n\", g%d);\n", t->offset)'''
+	'''f.write(\"%%VAR_TYPE\\n\", g%d);\n" % t->offset)'''
 	#Se local
-	'''f.write("printf(\"%%VAR_TYPE\\n\", *((VAR_TYPE*)(sp->locals[%d])));\n", t->offset)'''
+	'''f.write("printf(\"%%VAR_TYPE\\n\", *((VAR_TYPE*)(sp->locals[%d])));\n" % t->offset)'''
 	#Se assigment:
 	#Verificar se e local ou global
 	#Se global
-	'''f.write("g%d=%VAR_TYPE;\n", t->offset, value)'''
+	'''f.write("g%d=%VAR_TYPE;\n" % (t->offset, value))'''
 	#Se local
-	'''f.write("*((VAR_TYPE*)sp->locals[%d])=%VAR_TYPE;\n", t->offset, value)'''
+	'''f.write("*((VAR_TYPE*)sp->locals[%d])=%VAR_TYPE;\n" % (t->offset, value))'''
 	#Se call: 
 	'''translate_call_stat()'''
 	pass
 
 def translate_call_stat():
 	'''
-	f.write("_ra=%d;\n",returncounter)		#guarda de endereco de retorno
-	f.write("goto %s;\n", ias->proc)			#Salto para codigo do procedimento
-	f.write("return%d:\n", returncounter);		#label de retorno
+	f.write("_ra=%d;\n" % returncounter)		#guarda de endereco de retorno
+	f.write("goto %s;\n" % ias->proc)			#Salto para codigo do procedimento
+	f.write("return%d:\n" % returncounter);		#label de retorno
 	returncounter += 1'''	
 	pass
 
@@ -81,8 +81,8 @@ def translate_procedure():
 
 	f.write("\n/*BLOCO DO PROCEDIMENTO %s */\n", ip->name)
 	f.write("/*Prologo*/\n")
-	f.write("goto %sskip;\n", ip->name) #nao executar codigo quando o main for corrido da primeira vez		 
-	f.write("%s:\n",ip->name)	
+	f.write("goto %sskip;\n" % ip->name) #nao executar codigo quando o main for corrido da primeira vez		 
+	f.write("%s:\n" % ip->name)	
 	f.write("fp=sp;\n")				#Guarda do endereco da frame anterior (sp), no frame pointer (fp)
 	f.write("sp=(frame*)malloc(sizeof(frame));\n")	#Criacao de uma nova frame
 	f.write("sp->parent=fp;\n")			#Guarda do endereco para a frame anterior, na propria frame
@@ -99,7 +99,7 @@ def translate_procedure():
 	f.write("sp=sp->parent;\n")			#"pop" da pilha de frames
 	f.write("fp=sp->parent;\n")			#actualizacao do registo FP de acordo
 	f.write("goto redirector;\n")			#Instrucao especifica para a nossa implementacao em C "restringido"
-	f.write("%sskip:\n", ip->name) 			#label para acesso a instruccao seguinte ao codigo do procedimento
+	f.write("%sskip:\n" % ip->name) 			#label para acesso a instruccao seguinte ao codigo do procedimento
 	'''
 	pass
 
@@ -113,7 +113,7 @@ def translate_redirector():
 	f.write("redirector:\n")
 
 	for i in range(returncounter):
-		f.write("if(_ra==%d) goto return%d;\n", i, i)   #Para cada endereco de retorno, sua label associada
+		f.write("if(_ra==%d) goto return%d;\n" % (i,i))   #Para cada endereco de retorno, sua label associada
 		
 	f.write("exit:\n;\n")
 

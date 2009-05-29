@@ -7,13 +7,13 @@ from excep.different_types_in_assignment import *
 key_words = ['WRITELN', 'WRITE', 'READLN', 'READ']
 
 
-def display(node):
+def display(node,i=0):
 	if type(node) == type("") or node == None:
-		print node
+		print node,i
 		return
-	print node.type
+	print node.type,i
 	for child in node.children:
-			display(child)
+			display(child,i+1)
 
 
 def add_to_stack(t, stack):
