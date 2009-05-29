@@ -1,7 +1,7 @@
 from code.display import *
 from lib.get_program import get_program
 from parser.yaccFile import *
-from gen.generate import *
+#from gen.generate import *
 
 
 s = get_program()
@@ -9,8 +9,8 @@ s = get_program()
 yacc.yacc()
 t = yacc.parse(s)
 run_tree(t)
-display(t)
-generate(t)
+#display(t)
+#generate(t)
 print stack.length()
 print stack.display()
 print 'number of func/proc:', len(stack.proc_func)

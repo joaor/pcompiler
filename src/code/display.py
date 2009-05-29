@@ -56,8 +56,11 @@ def run_tree( node, in_function=False):
 
 def type_denoter_subtree( node):
 	if node == None:		return
-	if type(node) == type(""):										
-		table.add_type(node.upper())
+	if type(node) == type(""):
+		try:										
+			table.add_type(node.upper())
+		except TypeUnknow, e:
+			print e
 		return node
 
 	go_children(node.children, type_denoter_subtree)

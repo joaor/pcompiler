@@ -1,7 +1,7 @@
 from excep.variable_already_defined import *
 from excep.variable_declaration_error import *
 from excep.variable_not_defined import *
-from excep.wrong_number_of_types import *
+from excep.type_unknow import *
 
 class Table():
 	def __init__(self, nm=None):
@@ -18,7 +18,10 @@ class Table():
 
 
 	def add_type(self, type):
-		self.listt.append(type)
+		if type in ['REAL', 'INTEGER', 'STRING']:
+			self.listt.append(type)
+		else:
+			raise TypeUnknow(type)
 		
 
 	def find(self, identifier):
