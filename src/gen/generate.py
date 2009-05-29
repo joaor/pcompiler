@@ -38,10 +38,19 @@ def generate(node):
 		print typ
 		if len(var) == len(typ):
 			for i in range(len(var)):
-				f.write("%s %s;\n" % (typ[i],var[i]))
+				f.write("%s %s;\n" % (translate_type(typ[i]),var[i]))
 		else:
+			t = translate_type(typ[0])
 			for v in var:
-				f.write("%s %s;\n" % (typ[0],v))
+				f.write("%s %s;\n" % (t,v))
+
+def translate_type(t):
+	if t == "integer":
+		return "int"
+	elif t == "real":
+		return "float"
+	else:
+		return "char*"
 
 def translate_header():
 	f.write(  "#include \"frame.h\"\n"
