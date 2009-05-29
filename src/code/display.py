@@ -24,7 +24,7 @@ def run_tree( node, in_function=False):
 
 	if node.type in ['variable_declaration_part','formal_parameter_section_list']:
 		go_children(node.children, var_subtree)
-		if in_function and node.type == 'formal_parameter_section_list':	
+		if in_function and node.type == 'formal_parameter_section_list':
 			stack.proc_func[-1].copy_params(table.hash)
 			
 	elif node.type == 'block_name':
@@ -49,6 +49,7 @@ def run_tree( node, in_function=False):
 		go_children(node.children, run_tree, in_function)
 		if node.type == 'block':	
 			stack.pop_frame()
+			#table = stack.stack[-1]
 
 
 
@@ -56,13 +57,11 @@ def run_tree( node, in_function=False):
 def type_denoter_subtree( node):
 	if node == None:		return
 	if type(node) == type(""):										
-		try:
-			table.add_type(node.upper())
-		except VariableDeclarationError, e:
-			print e
+		table.add_type(node.upper())
 		return node
 
-	table.check_queue( go_children(node.children, type_denoter_subtree).upper())
+	go_children(node.children, type_denoter_subtree)
+	#table.check_queue( go_children(node.children, type_denoter_subtree).upper())
 
 
 
@@ -70,13 +69,18 @@ def var_subtree(node):
 	if node == None:		return
 	if type(node) == type(""):
 		try:
-			table.queue_identifier(node.upper())
+			table.add_var(node.upper())
 		except VariableAlreadyDefined, e:
 			print e
 		return
 
 	if node.type == 'type_denoter':
 		go_children(node.children, type_denoter_subtree)
+		try:
+			table.check_queue()
+		except VariableDeclarationError, e:
+			print e
+		table.clean()
 	else:
 		go_children(node.children, var_subtree)
 
