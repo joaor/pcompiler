@@ -318,9 +318,14 @@ def p_unsigned_constant(t):
 	'''unsigned_constant : INTEGER
 					 | REAL
  					 | CHAR
- 					 | BOOLEAN
+ 					 | boolean
  					 | NIL'''
 	t[0] = AST("unsigned_constant", [t[1]] )
+
+def p_boolean(t):
+	'''boolean : FALSE
+							| TRUE'''
+	t[0] = AST("boolean", [t[1]] )
 
 def p_relop(t):
 	'''relop : EQUALS

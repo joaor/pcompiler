@@ -71,15 +71,6 @@ def t_IDENTIFIER(t):
 		t.type = reserved.get(t.value.lower())
 	return t
 
-def t_BOOLEAN(t):
-	r'"true"|"false"'
-	try:
-		t.value = bool(t.value)
-	except ValueError:
-		print "Line %d: Number %s is too large!" % (t.lineno, t.value)
-		t.value = False
-	return t
-
 def t_CHAR(t):
 	r'(\'[\w]\') | (\"[\w]\")'
 	return t

@@ -1,7 +1,7 @@
 program test_var; 
 var 
-y,z : real; 
+y,z : boolean; 
 i : char; 
 begin 
-	f := false;
+	i := FalSe;
 end.
