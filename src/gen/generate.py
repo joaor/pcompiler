@@ -1,5 +1,6 @@
 f = open("gen/c_code/output.c",'w')
 dic_typ = {"integer":"int","real":"float","string":"char*"}
+dic_trans = {"mod":"%","div":"//"}
 
 def generate(node):
 	if node == None:
@@ -15,11 +16,6 @@ def generate(node):
 			generate(child)
 		translate_footer()
 		f.close()
-#"block","variable_declaration_part","variable_declation_list","compound_statement",
-#					"statement_sequence","statement","open_statement","closed_statement","expression",
-#					"unsigned_constant","relop","addop","mulop","sign"
-#"identifier_list","type_denoter","simple_expression","term","factor","exponentiation",
-#					"primary"
 
 	elif node.type in  ["block","variable_declaration_part","variable_declation_list","compound_statement",
 					"statement_sequence","statement","open_statement","closed_statement"]:
@@ -43,26 +39,24 @@ def generate(node):
 
 	elif node.type in ["assignment_statement"]:
 		var = generate(node.children[0])
-		print var +"olaaaaaaaaaaa"
 		assg = generate(node.children[1])
-		print "Assgmt:"
-		print assg
+
+		st = " ".join( get_list(assg) )
+		for i in dic_trans:
+			st = st.replace(i,dic_trans[i])
+		f.write("%s = %s\n" % (var,st) )	
+	
 
 	elif node.type in ["simple_expression","term"]:
 		if len(node.children) == 1:
-			#print "AKIII"
-			assg = generate(node.children[0])
-			#print "ola "+str(assg)
-			return assg
+			assg = [generate(node.children[0])]
 		else:
 			assg = [generate(node.children[0]), generate(node.children[1]), generate(node.children[2])]
-			return assg
+		return assg
 
 	elif node.type in ["variable_declaration"]:
 		var = generate(node.children[0])
 		typ = generate(node.children[1])
-		#print var
-		#print typ
 		if len(var) == len(typ):
 			for i in range(len(var)):
 				f.write("%s %s;\n" % (dic_typ[typ[i]],var[i]))
@@ -70,6 +64,18 @@ def generate(node):
 			t = dic_typ[typ[0]]
 			for v in var:
 				f.write("%s %s;\n" % (t,v))
+
+def get_list(lis):
+	a = []
+	for i in lis:
+		if type(i) == type([]):
+			a = a + get_list(i)
+		else:
+			a.append(str(i))
+	return a
+
+
+
 
 def translate_header():
 	f.write(  "#include \"frame.h\"\n"
