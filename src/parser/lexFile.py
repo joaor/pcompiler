@@ -71,21 +71,35 @@ def t_IDENTIFIER(t):
 		t.type = reserved.get(t.value.lower())
 	return t
 
+def t_BOOLEAN(t):
+	r'"true"|"false"'
+	try:
+		t.value = bool(t.value)
+	except ValueError:
+		print "Line %d: Number %s is too large!" % (t.lineno, t.value)
+		t.value = False
+	return t
+
 def t_CHAR(t):
 	r'(\'[\w]\') | (\"[\w]\")'
 	return t
 
 def t_REAL(t):
 	r'[0-9]+\.[0-9]+'
+	try:
+		t.value = float(t.value)
+	except ValueError:
+		print "Line %d: Number %s is too large!" % (t.lineno, t.value)
+		t.value = 0.0
 	return t
 
 def t_INTEGER(t):
     r'[0-9]+'
     try:
-         t.value = int(t.value)
+    	t.value = int(t.value)
     except ValueError:
-         print "Line %d: Number %s is too large!" % (t.lineno, t.value)
-    t.value = 0
+    	print "Line %d: Number %s is too large!" % (t.lineno, t.value)
+    	t.value = 0
     return t
 
 def t_newline(t):

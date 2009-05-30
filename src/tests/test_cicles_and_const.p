@@ -1,7 +1,4 @@
 program test2; 
-const a = 5; 
-b= 10;
- 
 var j : real; 
 i : integer;
  

@@ -3,15 +3,17 @@ from table import *
 from code.proc_and_func import *
 from excep.wrong_number_of_arguments import *
 from excep.different_types_in_assignment import *
+from excep.variable_not_assigned import *
 
-key_words = ['WRITELN', 'WRITE', 'READLN', 'READ']
+key_words = ['WRITELN', 'WRITE', 'READLN', 'READ', 
+						'+', '-', '*', '/', '=','<','>','<>','<=', '>=']
 
 
 def display(node,i=0):
 	if type(node) == type("") or node == None or type(node) == type(1):
-		print node,i
+		print node#,i
 		return
-	print node.type,i
+	print node.type#,i
 	for child in node.children:
 		display(child,i+1)
 

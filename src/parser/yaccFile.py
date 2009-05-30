@@ -412,6 +412,7 @@ def p_unsigned_constant(t):
 	'''unsigned_constant : INTEGER
 					 | REAL
  					 | CHAR
+ 					 | BOOLEAN
  					 | NIL'''
 	t[0] = AST("unsigned_constant", [t[1]] )
 

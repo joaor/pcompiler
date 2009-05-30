@@ -18,7 +18,7 @@ class Table():
 
 
 	def add_type(self, type):
-		if type in ['REAL', 'INTEGER', 'STRING']:
+		if type in ['REAL', 'INTEGER', 'CHAR', 'BOOLEAN']:
 			self.listt.append(type)
 		else:
 			raise TypeUnknow(type)
@@ -38,11 +38,11 @@ class Table():
 		lv = len(self.listv)
 		if lv == lt:
 			for i in range(lt):
-				self.hash[self.listv[i]] = self.listt[i]
+				self.hash[self.listv[i]] = [self.listt[i], False]
 			
 		elif lt==1:
 			for i in self.listv:
-				self.hash[i] = self.listt[0]
+				self.hash[i] = [self.listt[0], False]
 				
 		else:
 			raise VariableDeclarationError(lv, lt)

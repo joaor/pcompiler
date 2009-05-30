@@ -8,7 +8,7 @@ def go_children(children,f, *args):
 
 
 def run_tree( node, in_function=False):
-	if node == None:	return None
+	if node == None or type(node) == type(1):	return None
 	if type(node) == type(""):	
 		return find_var(node.upper(), stack)
 
@@ -41,7 +41,7 @@ def run_tree( node, in_function=False):
 			
 	elif node.type == 'assignment_statement':
 		try:
-			assignment_validation(node, find_var(node.children[0], stack))		
+			assignment_validator(node, node.children[0], find_var(node.children[0], stack))		
 		except DifferentTypesInAssignment, e:
 			print e
 	
@@ -132,19 +132,45 @@ def function_calling(node, stack):
 		raise WrongNumberOfArguments(name, len(pf.params), 0)
 
 
+def assignment_validator(node, var, info):
+	if not info:
+		return
+		
+	try:
+		go_children(node.children[1:], assignment_validation, info[0])
+		#assignment_validation(node, info[0])
+	except VariableNotAssigned, e:
+		print e
+		return
+	info[1]=True 
+
 
 def assignment_validation(node, assignment_type=None, t=None):
 	if node==None or assignment_type==None: return
 	if type(node) == type(''):
-		t=find_var(node.upper(), stack)
-		if t==None: return
+		if len(node)==3 and node[0]==node[2]=="'":
+				t = ['CHAR',node]	
+		else:
+			t=find_var(node.upper(), stack)
+			if t==None: return
+	
+	elif type(node) == type(1):
+		t = ['INTEGER',node]
+
+	elif type(node) == type(1.1):
+		t = ['REAL',node]
+	
+	elif type(node) == type(True):
+		t = ['BOOLEAN',node]	
 	
 	elif node.type == 'function_designator':
 		t = function_designator(node, stack)
 		
 	if t:
-		if t != assignment_type:
-			raise DifferentTypesInAssignment(t,assignment_type)
+		if t[0] != assignment_type:
+			raise DifferentTypesInAssignment(t[0],assignment_type)
+		if not t[1]:
+			raise VariableNotAssigned(node.upper(), t[0])
 	else:
 		go_children(node.children, assignment_validation, assignment_type)
 			

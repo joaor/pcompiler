@@ -1,8 +1,7 @@
 program test_var; 
-var y,z : real; 
-i : integer; 
+var 
+y,z : real; 
+i : char; 
 begin 
-	z := 2;
-	y := 1 + z;
-	write(y)
+	f := false;
 end.
