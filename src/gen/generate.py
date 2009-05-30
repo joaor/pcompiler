@@ -18,9 +18,6 @@ def generate(node):
 	elif node.type in ["block","variable_declaration_part","variable_declation_list"]:
 		for child in node.children:
 			generate(child)
-	
-	#elif node.type in ["type_denoter"]:
-		#print "OOOOOOOOOOOOOOOOOOOO"
 
 	elif node.type in ["identifier_list","type_denoter"]:
 		l = []

@@ -413,10 +413,12 @@ def p_unsigned_constant(t):
 					 | REAL
  					 | CHAR
  					 | NIL'''
+	t[0] = AST("unsigned_constant", [t[1]] )
 
 def p_sign(t):
 	'''sign   : ADD_OP
  			| SUB_OP'''
+	t[0] = AST("sign", [t[1]] )
 
 def p_relop(t):
 	'''relop : EQUALS
@@ -426,11 +428,13 @@ def p_relop(t):
  		    | LESS_OR_EQUAL
  		    | GREATER_OR_EQUAL
  		    | IN'''
+	t[0] = AST("relop", [t[1]] )
 
 def p_addop(t):
 	'''addop  : ADD_OP
  			| SUB_OP
  			| OR'''
+	t[0] = AST("addop", [t[1]] )
 
 def p_mulop(t):
 	'''mulop  : MUL_OP
@@ -438,11 +442,12 @@ def p_mulop(t):
  			| DIV
 			| MOD
  			| AND'''
+	t[0] = AST("mulop", [t[1]] )
 
 #Caso haja erro
 def p_error(t):
-	print "Syntax error in input!"
-
+	print "Syntax error in input, in line %d!" % t.lineno
+	sys.exit()
 #yacc.parse(s)
 
 
