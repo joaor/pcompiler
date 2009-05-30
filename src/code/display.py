@@ -149,7 +149,7 @@ def assignment_validation(node, assignment_type=None, t=None):
 	if node==None or assignment_type==None: return
 	if type(node) == type(''):
 		if len(node)==3 and node[0]==node[2]=="'":
-				t = ['CHAR',node]	
+			t = ['CHAR',node]
 		else:
 			t=find_var(node.upper(), stack)
 			if t==None: return
@@ -160,11 +160,12 @@ def assignment_validation(node, assignment_type=None, t=None):
 	elif type(node) == type(1.1):
 		t = ['REAL',node]
 	
-	elif type(node) == type(True):
+	elif node.type == 'boolean':
 		t = ['BOOLEAN',node]	
 	
 	elif node.type == 'function_designator':
 		t = function_designator(node, stack)
+		
 		
 	if t:
 		if t[0] != assignment_type:
