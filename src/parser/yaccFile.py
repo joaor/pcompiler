@@ -10,8 +10,8 @@ def p_program(t):
 
 
 def p_block(t):
-	'block : constant_definition_part variable_declaration_part procedure_and_function_declaration_part compound_statement'
-	t[0] = AST("block", [t[1],t[2],t[3],t[4]] )
+	'block : variable_declaration_part procedure_and_function_declaration_part compound_statement'
+	t[0] = AST("block", [t[1],t[2],t[3]] )
 	
 #auxiliar para conseguir distinguir nomes de programa, funcao e procedimentos
 def p_block_name(t):
@@ -37,84 +37,6 @@ def p_identifier_list(t):
 		t[0] = AST("identifier_list", [t[1]] )
 	else:
 		t[0] = AST("identifier_list", [t[1],t[3]] )
-
-#Declaracao de constantes----------------------------------------------------------
-def p_constant_definition_part(t):
-	'''constant_definition_part : CONST constant_list
-							| '''
-	if len(t)==3:
-		t[0] = AST("constant_definition_part", [t[2]] )
-
-
-def p_constant_list(t):
-	'''constant_list 	: constant_list constant_definition
- 					| constant_definition'''
-	if len(t)==2:
-		t[0] = AST("constant_list", [t[1]] )
-	else:
-		t[0] = AST("constant_list", [t[1],t[2]] )
-
-
-def p_constant_definition(t):
-	'constant_definition : IDENTIFIER EQUALS cexpression SEMICOLON'
-	
-	t[0] = AST("constant_definition", [t[1],t[3]] )
-
-
-def p_cexpression(t):
-	'''cexpression : csimple_expression
- 				| csimple_expression relop csimple_expression'''
-
-	if len(t)==2:
-		t[0] = AST("cexpression", [t[1]] )
-	else:
-		t[0] = AST("cexpression", [t[1],t[2],t[3]] )
-
-
-def p_csimple_expression(t):
-	'''csimple_expression : cterm
- 					  | csimple_expression addop cterm'''
-
-	if len(t)==2:
-		t[0] = AST("csimple_expression", [t[1]] )
-	else:
-		t[0] = AST("csimple_expression", [t[1],t[2],t[3]] )
-
-
-def p_cterm(t):
-	'''cterm  : cfactor
- 			| cterm mulop cfactor'''
-	if len(t)==2:
-		t[0] = AST("cterm", [t[1]] )
-	else:
-		t[0] = AST("cterm", [t[1],t[2],t[3]] )
-
-def p_cfactor(t):
-	'''cfactor : sign cfactor
- 			 | cexponentiation'''
-	if len(t)==2:
-		t[0] = AST("cfactor", [t[1]] )
-	else:
-		t[0] = AST("cfactor", [t[1],t[2]] )
-
-def p_cexponentiation(t):
-	'''cexponentiation  : cprimary
- 					| cprimary EXP cexponentiation'''
-	if len(t)==2:
-		t[0] = AST("cexponentiation", [t[1]] )
-	else:
-		t[0] = AST("cexponentiation", [t[1],t[3]] )
-
-def p_cprimary(t):
-	'''cprimary 	: IDENTIFIER
- 				| LEFT_PAREN cexpression RIGHT_PAREN
- 				| unsigned_constant
- 				| NOT cprimary'''
-	if len(t)==2:
-		t[0] = AST("cprimary", [t[1]] )
-	else:
-		t[0] = AST("cprimary", [t[2]] )
-
 
 #Declaracao de variaveis----------------------------------------------------
 def p_variable_declaration_part(t):
@@ -367,28 +289,12 @@ def p_simple_expression(t):
 		t[0] = AST("simple_expression", [t[1],t[2],t[3]] )
 
 def p_term(t):
-	'''term 	: factor
- 			| term mulop factor'''
+	'''term 	: primary
+ 			| term mulop primary'''
 	if len(t)==2:
 		t[0] = AST("term", [t[1]] )
 	else:
 		t[0] = AST("term", [t[1],t[2],t[3]] )
-
-def p_factor(t):
-	'''factor 	: sign factor
- 				| exponentiation'''
-	if len(t)==3:
-		t[0] = AST("factor", [t[1],t[2]] )
-	else:
-		t[0] = AST("factor", [t[1]] )
-
-def p_exponentiation(t):
-	'''exponentiation 	: primary
- 					| primary EXP exponentiation'''
-	if len(t)==2:
-		t[0] = AST("exponentiations", [t[1]] )
-	else:
-		t[0] = AST("exponentiations", [t[1],t[3]] )
 
 def p_primary(t):
 	'''primary 	: IDENTIFIER
@@ -414,11 +320,6 @@ def p_unsigned_constant(t):
  					 | CHAR
  					 | NIL'''
 	t[0] = AST("unsigned_constant", [t[1]] )
-
-def p_sign(t):
-	'''sign   : ADD_OP
- 			| SUB_OP'''
-	t[0] = AST("sign", [t[1]] )
 
 def p_relop(t):
 	'''relop : EQUALS
@@ -446,6 +347,7 @@ def p_mulop(t):
 
 #Caso haja erro
 def p_error(t):
+	import sys
 	print "Syntax error in input, in line %d!" % t.lineno
 	sys.exit()
 #yacc.parse(s)

@@ -85,7 +85,6 @@ def t_INTEGER(t):
          t.value = int(t.value)
     except ValueError:
          print "Line %d: Number %s is too large!" % (t.lineno, t.value)
-    t.value = 0
     return t
 
 def t_newline(t):
