@@ -5,19 +5,31 @@ def generate(node):
 	if node == None:
 		return None
 
-	elif type(node) == type(""):
+	elif type(node) == type("") or type(node) == type(1):
+		#print "retornei "+ str(node) 
 		return node
 
-	elif node.type == "program":
+	elif node.type in ["program"]:
 		translate_header()
 		for child in node.children:
 			generate(child)
 		translate_footer()
 		f.close()
+#"block","variable_declaration_part","variable_declation_list","compound_statement",
+#					"statement_sequence","statement","open_statement","closed_statement","expression",
+#					"unsigned_constant","relop","addop","mulop","sign"
+#"identifier_list","type_denoter","simple_expression","term","factor","exponentiation",
+#					"primary"
 
-	elif node.type in ["block","variable_declaration_part","variable_declation_list"]:
+	elif node.type in  ["block","variable_declaration_part","variable_declation_list","compound_statement",
+					"statement_sequence","statement","open_statement","closed_statement"]:
 		for child in node.children:
 			generate(child)
+
+	elif node.type in ["primary","unsigned_constant","relop","addop","mulop","expression"]:
+		for child in node.children:
+			return generate(child)
+
 
 	elif node.type in ["identifier_list","type_denoter"]:
 		l = []
@@ -29,11 +41,28 @@ def generate(node):
 				l = l + r
 		return l
 
+	elif node.type in ["assignment_statement"]:
+		var = generate(node.children[0])
+		print var +"olaaaaaaaaaaa"
+		assg = generate(node.children[1])
+		print "Assgmt:"
+		print assg
+
+	elif node.type in ["simple_expression","term"]:
+		if len(node.children) == 1:
+			#print "AKIII"
+			assg = generate(node.children[0])
+			#print "ola "+str(assg)
+			return assg
+		else:
+			assg = [generate(node.children[0]), generate(node.children[1]), generate(node.children[2])]
+			return assg
+
 	elif node.type in ["variable_declaration"]:
 		var = generate(node.children[0])
 		typ = generate(node.children[1])
-		print var
-		print typ
+		#print var
+		#print typ
 		if len(var) == len(typ):
 			for i in range(len(var)):
 				f.write("%s %s;\n" % (dic_typ[typ[i]],var[i]))
