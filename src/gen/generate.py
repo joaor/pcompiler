@@ -1,4 +1,5 @@
 f = open("gen/c_code/output.c",'w')
+dic_typ = {"integer":"int","real":"float","string":"char*"}
 
 def generate(node):
 	if node == None:
@@ -38,19 +39,11 @@ def generate(node):
 		print typ
 		if len(var) == len(typ):
 			for i in range(len(var)):
-				f.write("%s %s;\n" % (translate_type(typ[i]),var[i]))
+				f.write("%s %s;\n" % (dic_typ[typ[i]],var[i]))
 		else:
-			t = translate_type(typ[0])
+			t = dic_typ[typ[0]]
 			for v in var:
 				f.write("%s %s;\n" % (t,v))
-
-def translate_type(t):
-	if t == "integer":
-		return "int"
-	elif t == "real":
-		return "float"
-	else:
-		return "char*"
 
 def translate_header():
 	f.write(  "#include \"frame.h\"\n"
