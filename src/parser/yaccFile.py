@@ -301,7 +301,8 @@ def p_primary(t):
  				| unsigned_constant
  				| function_designator
  				| LEFT_PAREN expression RIGHT_PAREN
- 				| NOT primary'''
+ 				| NOT primary
+				| STRING'''
 	if len(t)==2:
 		t[0] = AST("primary", [t[1]] )
 	else:

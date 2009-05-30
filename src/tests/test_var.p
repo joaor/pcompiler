@@ -1,7 +1,9 @@
 program test_var; 
 var 
-y,z : real; 
-i : char; 
+y,z : integer;  
 begin 
-	f := false;
+   z := 2;
+   y := 1 + z;
+   write('O resuktado e: ');
+   writeln(y);
 end.

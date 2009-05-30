@@ -104,7 +104,7 @@ def t_INTEGER(t):
 
 def t_newline(t):
     r'\n+'
-    t.lineno += len(t.value)
+    t.lexer.lineno += len(t.value)
 
 #Caracteres igorados
 t_ignore  = ' \t'

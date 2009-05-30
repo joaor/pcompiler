@@ -11,9 +11,9 @@ key_words = ['WRITELN', 'WRITE', 'READLN', 'READ',
 
 def display(node,i=0):
 	if type(node) == type("") or node == None or type(node) == type(1):
-		print node#,i
+		print node,i
 		return
-	print node.type#,i
+	print node.type,i
 	for child in node.children:
 		display(child,i+1)
 
