@@ -8,12 +8,12 @@ key_words = ['WRITELN', 'WRITE', 'READLN', 'READ']
 
 
 def display(node,i=0):
-	if type(node) == type("") or node == None:
+	if type(node) == type("") or node == None or type(node) == type(1):
 		print node,i
 		return
 	print node.type,i
 	for child in node.children:
-			display(child,i+1)
+		display(child,i+1)
 
 
 def add_to_stack(t, stack):
