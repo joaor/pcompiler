@@ -44,7 +44,13 @@ def generate(node):
 		st = " ".join( get_list(assg) )
 		for i in dic_trans:
 			st = st.replace(i,dic_trans[i])
-		f.write("%s = %s\n" % (var,st) )	
+		f.write("%s = %s;\n" % (var,st) )	
+
+	elif node.type in ["procedure_statement"]:
+		name = generate(node.children[0])
+		params = generate(node.children[1])
+		#TODO chamada de funcoes
+		print name + "OLA"	
 	
 
 	elif node.type in ["simple_expression","term"]:
@@ -82,10 +88,17 @@ def translate_header():
 			"#include <stdlib.h>\n"
 			"#include <stdio.h>\n\n"
 			"int main()\n{\n"
-			"int _ra;\n"
 			"frame* fp=NULL;\n"
 			"frame* sp=NULL;\n"
 		)
 
 def translate_footer():
-	f.write("\n}\n\n")
+	f.write(  "return 0\n"
+			"}\n\n"
+		)
+
+
+
+
+
+
