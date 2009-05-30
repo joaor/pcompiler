@@ -324,8 +324,8 @@ def p_unsigned_constant(t):
 	t[0] = AST("unsigned_constant", [t[1]] )
 
 def p_boolean(t):
-	'''boolean : FALSE
-							| TRUE'''
+	'''boolean :   FALSE
+				| TRUE'''
 	t[0] = AST("boolean", [t[1]] )
 
 def p_relop(t):

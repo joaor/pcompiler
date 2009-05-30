@@ -1,6 +1,6 @@
 f = open("gen/c_code/output.c",'w')
-dic_typ = {"integer":"int","real":"float","string":"char*"}
-dic_type_c = {"int":"%d","float":"%f","char*":"%c"}
+dic_typ = {"integer":"int","real":"float","char":"char","boolean":"int"}
+dic_type_c = {"int":"%d","float":"%f","char":"%c"}
 dic_trans = {"mod":"%","div":"//"}
 global_vars = {}
 
@@ -11,7 +11,7 @@ def generate(node):
 	if node == None:
 		return None
 
-	elif type(node) == type("") or type(node) == type(1):
+	elif type(node) == type("") or type(node) == type(1) or type(node) == type(1.4):
 		#print "retornei "+ str(node) 
 		return node
 
@@ -28,7 +28,7 @@ def generate(node):
 			generate(child)
 
 	elif node.type in [ "primary","unsigned_constant","relop","addop","mulop","expression","actual_parameter",
-					"params"]:
+					"params","boolean"]:
 		for child in node.children:
 			return generate(child)
 
@@ -46,13 +46,18 @@ def generate(node):
 	elif node.type in ["assignment_statement"]:
 		var = generate(node.children[0])
 		assg = generate(node.children[1])
-
+		print "AQU"
+		print var
+		print assg
 		st = " ".join( get_list(assg) )
-		for i in dic_trans:
-			st = st.replace(i,dic_trans[i])
+		if st.upper() not in ["FALSE","TRUE"]:
+			for i in dic_trans:
+				st = st.replace(i,dic_trans[i])
 
-		for i in global_vars:
-			st = st.replace(i,global_vars[i][1])
+			for i in global_vars:
+				st = st.replace(i,global_vars[i][1])
+		else:
+			st = st.upper()
 
 		f.write("%s = %s;\n" % (global_vars[var][1],st) )	
 
@@ -122,7 +127,9 @@ def get_list(lis):
 def translate_header():
 	f.write(  "#include \"frame.h\"\n"
 			"#include <stdlib.h>\n"
-			"#include <stdio.h>\n\n"
+			"#include <stdio.h>\n"
+			"#define FALSE 0\n"
+			"#define TRUE 1\n\n"
 			"int main()\n{\n"
 			"frame* fp=NULL;\n"
 			"frame* sp=NULL;\n"

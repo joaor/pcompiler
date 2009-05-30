@@ -12,7 +12,7 @@ key_words = ['WRITELN', 'WRITE', 'READLN', 'READ',
 
 
 def display(node,i=0):
-	if type(node) == type("") or node == None or type(node) == type(1):
+	if type(node) == type("") or node == None or type(node) == type(1) or type(node) == type(1.4):
 		print node,i
 		return
 	print node.type,i
