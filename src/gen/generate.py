@@ -1,9 +1,12 @@
+from frame import *
+
 f = open("gen/c_code/output.c",'w')
 dic_typ = {"integer":"int","real":"float","char":"char","boolean":"int"}
 dic_type_c = {"int":"%d","float":"%f","char":"%c"}
 dic_trans = {"mod":"%","div":"/"}
 global_vars = {} #{'y': 'g0', 'a': 'g2', 'c': 'g4', 'z': 'g1', 'b': 'g3'}
 var_type = {} #{'g4': 'integer', 'g3': 'boolean', 'g2': 'char', 'g1': 'real', 'g0': 'real'}
+frames = {}
 #WRONG_NUMBER_OF_ARGUMENTS: SCOPEINNER takes exactly 0 arguments (0 given) 
 #VARIABLE_NOT_ASSIGNED: C (INTEGER) has no value
 #Funcoes com o mesmo nome nao da erro
@@ -40,6 +43,7 @@ def generate(node):
 			MAIN_BLOCK = b
 			block_flag = True
 		ACT_BLOCK = b
+		print ACT_BLOCK
 		return ACT_BLOCK
 
 	elif node.type in ["procedure_and_function_declaration_part"]:
@@ -48,8 +52,9 @@ def generate(node):
 
 	elif node.type in ["procedure_declaration"]:
 		name = generate(node.children[0])
+		frames[name] = Frame()
 		translate_proc_1st(name)
-		generate(node.children[0])
+		generate(node.children[1])
 		translate_proc_2nd(name)
 
 	elif node.type in  ["block","variable_declaration_part","variable_declation_list","compound_statement",
@@ -136,6 +141,10 @@ def generate(node):
 				if ACT_BLOCK == MAIN_BLOCK:
 					w = set_var(var[i],typ[i])
 					f.write( "%s %s;\n" % (w[0],w[1]) )
+				else:
+					w = frames[ACT_BLOCK].set_var(var[i],typ[i])
+					nt = dic_typ[w[0]]
+					f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
 				
 		else:
 			t = typ[0]
@@ -143,6 +152,10 @@ def generate(node):
 				if ACT_BLOCK == MAIN_BLOCK:
 					w = set_var(v,t)
 					f.write("%s %s;\n" % (w[0],w[1]))
+				else:
+					w = frames[ACT_BLOCK].set_var(v,t)
+					nt = dic_typ[w[0]]
+					f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
 
 def set_var(v,t):
 	global var_counter
@@ -196,6 +209,14 @@ def translate_proc_2nd(name):
 		)
 	f.write(  "%sskip:\n" % (name) )
 
+def translate_redirector():
+	f.write("/*Redirector*/\n")
+	f.write("goto exit;\n")
+	f.write("redirector:\n")
 
+	for i in range(returncounter):
+		f.write("if(_ra==%d) goto return%d;\n" % (i,i))   #Para cada endereco de retorno, sua label associada
+		
+	f.write("exit:\n;\n")
 
 

@@ -6,27 +6,30 @@ b : boolean;
 c : integer;
 
 procedure ScopeInner;
+var K : char;
 begin
 	writeln(a);
 end;
 
 procedure Sco;
-var Y : integer;
+var P : integer;
+Q : real; 
 begin
-	Y := 10;
-	writeln(Y);
+	P := 10;
+	Q := 2.2;
+	writeln(P);
 end;
 
 begin 
-   z := 2.2;
-   y := 1.3 + z;
-   a := 'y';
-   b := faLse;
-   c := 2 + 5*2 + 4 mod 7 div 6;
-   write('O mod z e: ');
-   writeln(y);
-   writeln(a);
-   writeln(b);
-   write(c);
+   	z := 2.2;
+  	 y := 1.3 + z;
+  	 a := 'y';
+  	 b := faLse;
+ 	  c := 2 + 5*2 + 4 mod 7 div 6;
+  	 write('O mod z e: ');
+  	 writeln(y);
+  	 writeln(a);
+  	 writeln(b);
+  	 write(c);
 
 end.
