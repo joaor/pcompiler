@@ -77,9 +77,15 @@ def generate(node):
 	elif node.type in ["primary"]:
 		for child in node.children:
 			if type(child) == type(""):
-				for i in global_vars:
-					child = child.replace(i,global_vars[i])
-				return child
+				if ACT_BLOCK == MAIN_BLOCK:
+					return global_vars[child]
+				else:
+					if child in frames[ACT_BLOCK].global_vars:
+						v = frames[ACT_BLOCK].global_vars[child]
+						st = "*((%s*)sp->locals[%s])" % (dic_typ[frames[ACT_BLOCK].var_type[v]],v)
+						return st
+					else:
+						return global_vars[child]
 			else:
 				return generate(child)
 
@@ -97,7 +103,16 @@ def generate(node):
 		var = generate(node.children[0])
 		assg = generate(node.children[1])
 		st = get_list(assg)
-		f.write("%s = %s;\n" % (global_vars[var],st) )	
+
+		if ACT_BLOCK == MAIN_BLOCK:
+			f.write("%s = %s;\n" % (global_vars[var],st) )
+		else:
+			if var in frames[ACT_BLOCK].global_vars:
+				v = frames[ACT_BLOCK].global_vars[var]
+				t = dic_typ[frames[ACT_BLOCK].var_type[v]]
+				f.write("*((%s*)sp->locals[%s])=%s;\n" % (t,v,st) )
+			else:
+				f.write("%s = %s;\n" % (global_vars[var],st) )
 
 	elif node.type in ["procedure_statement"]:
 		name = generate(node.children[0])
