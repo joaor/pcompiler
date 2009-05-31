@@ -4,7 +4,6 @@ dic_type_c = {"int":"%d","float":"%f","char":"%c"}
 dic_trans = {"mod":"%","div":"//"}
 global_vars = {} #{'y': 'g0', 'a': 'g2', 'c': 'g4', 'z': 'g1', 'b': 'g3'}
 var_type = {} #{'g4': 'integer', 'g3': 'boolean', 'g2': 'char', 'g1': 'real', 'g0': 'real'}
-#ERRO NO CHAR DO LEX
 
 var_counter = 0
 
