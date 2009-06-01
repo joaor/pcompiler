@@ -13,12 +13,12 @@ end;
 
 procedure Sco;
 var P : integer;
-Q: real; 
+Q,z: real; 
 begin
 	P := 10 + c;
 	z := 4.4;
 	Q := 2.2 * z;	
-	write(P);
+	writeln(P);
 end;
 
 begin 
@@ -31,6 +31,7 @@ begin
   	writeln(y);
   	writeln(a);
   	writeln(b);
-  	write(c);
-
+  	writeln(c);
+	ScopeInner;
+	Sco;
 end.

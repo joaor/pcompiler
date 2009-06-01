@@ -11,13 +11,15 @@ frames = {}
 #VARIABLE_NOT_ASSIGNED: C (INTEGER) has no value
 #Funcoes com o mesmo nome nao da erro
 
+return_counter = 0
 var_counter = 0
 block_flag = False
+main_flag = False
 MAIN_BLOCK = ""
 ACT_BLOCK = ""
 
 def generate(node):
-	global block_flag,MAIN_BLOCK,ACT_BLOCK
+	global block_flag,main_flag,MAIN_BLOCK,ACT_BLOCK
 	if node == None:
 		return None	
 
@@ -46,10 +48,17 @@ def generate(node):
 		print ACT_BLOCK
 		return ACT_BLOCK
 
-	elif node.type in ["procedure_and_function_declaration_part"]:
+	elif node.type in ["procedure_and_function_declaration_part"] and not main_flag:
 		for child in node.children:
 			generate(child)
+		main = True
+		ACT_BLOCK = MAIN_BLOCK
+		print ACT_BLOCK
 
+	elif node.type in ["procedure_and_function_declaration_part"] and main_flag:
+		for child in node.children:
+			generate(child)
+	
 	elif node.type in ["procedure_declaration"]:
 		name = generate(node.children[0])
 		frames[name] = Frame()
@@ -81,8 +90,7 @@ def generate(node):
 					return global_vars[child]
 				else:
 					if child in frames[ACT_BLOCK].global_vars:
-						v = frames[ACT_BLOCK].global_vars[child]
-						return v
+						return frames[ACT_BLOCK].global_vars[child]
 					else:
 						return global_vars[child]
 			else:
@@ -107,12 +115,11 @@ def generate(node):
 			f.write("%s = %s;\n" % (global_vars[var],st) )
 		else:
 			if var in frames[ACT_BLOCK].global_vars:
-				v = frames[ACT_BLOCK].global_vars[var]
-				f.write("%s = %s;\n" % (v,st) )
+				f.write("%s = %s;\n" % (frames[ACT_BLOCK].global_vars[var],st) )
 			else:
 				f.write("%s = %s;\n" % (global_vars[var],st) )
 
-	elif node.type in ["procedure_statement"]:
+	elif node.type in ["procedure_statement"]: #LAVAGEM AKI
 		name = generate(node.children[0])
 		
 		if len(node.children)!=1:
@@ -145,8 +152,7 @@ def generate(node):
 					par = par + "\\n\""
 				f.write("printf(%s);\n" % (par))
 		else:
-			#TODO Outras funcoes; podem nao ter parametros!
-			pass
+			translate_call_stat(name)
 
 	elif node.type in ["simple_expression","term"]:
 		if len(node.children) == 1:
@@ -155,7 +161,7 @@ def generate(node):
 			assg = [generate(node.children[0]), generate(node.children[1]), generate(node.children[2])]
 		return assg
 
-	elif node.type in ["variable_declaration"]:
+	elif node.type in ["variable_declaration"]: #LAVAGEM AKI, EM 2 VERTENTES
 		var = generate(node.children[0])
 		typ = generate(node.children[1])
 		if len(var) == len(typ):
@@ -210,6 +216,7 @@ def translate_header():
 		)
 
 def translate_footer():
+	translate_redirector()
 	f.write(  "return 0;\n"
 			"}\n\n"
 		)
@@ -232,13 +239,20 @@ def translate_proc_2nd(name):
 	f.write(  "%sskip:\n" % (name) )
 
 def translate_redirector():
-	f.write("/*Redirector*/\n")
-	f.write("goto exit;\n")
-	f.write("redirector:\n")
+	global return_counter
+	f.write(  "goto exit;\n"
+			"redirector:\n"
+		)
 
-	for i in range(returncounter):
-		f.write("if(_ra==%d) goto return%d;\n" % (i,i))   #Para cada endereco de retorno, sua label associada
+	for i in range(return_counter):
+		f.write("if(_ra==%d) goto return%d;\n" % (i,i))
 		
-	f.write("exit:\n;\n")
+	f.write("exit:\n")
 
+def translate_call_stat(name):
+	global return_counter
+	f.write(  "_ra=%d;\n" % (return_counter) )
+	f.write(  "goto %s;\n" % (name) )
+	f.write(  "return%d:\n" % (return_counter) )
+	return_counter += 1	
 
