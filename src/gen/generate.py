@@ -63,18 +63,20 @@ def generate(node):
 		for child in node.children:
 			generate(child)
 	
-	elif node.type in ["function_declaration"]: #LIMPEZA NEED
+	elif node.type in ["function_declaration"]:
 		name = generate(node.children[0].children[0])
 		
 		if len(node.children[0].children) ==3:
 			retur = generate(node.children[0].children[2]) # return value
-			frames[name] = Frame(retur.lower())
-			par = generate(node.children[0].children[1]) #gerar parametros
 		else:
 			retur = generate(node.children[0].children[1]) # return value
-			frames[name] = Frame(retur.lower())
 
-		translate_proc_1st(name)
+		frames[name] = Frame(retur.lower())
+		translate_proc_1st(name)		
+		
+		if len(node.children[0].children) ==3:
+			par = generate(node.children[0].children[1]) #gerar parametros
+
 		generate(node.children[1]) # corpo da func
 		translate_proc_2nd(name)
 
@@ -86,8 +88,10 @@ def generate(node):
 
 		frames[name] = Frame()
 		translate_proc_1st(name)
+
 		if len(node.children[0].children)!=1:
-			generate(node.children[0].children[1]) #gerar parametros			
+			generate(node.children[0].children[1]) #gerar parametros	
+		
 		generate(node.children[1]) #corpo do proc
 		translate_proc_2nd(name)
 
@@ -136,13 +140,10 @@ def generate(node):
 		var = generate(node.children[0])
 		assg = generate(node.children[1])
 		st = get_list(assg)
-		
 		if var.lower() == ACT_BLOCK:
-			print var
-			print st
 			rt = dic_typ[frames[ACT_BLOCK].return_typ]
 			f.write("sp->parent->return_val[0] = (%s*)malloc(sizeof(%s));\n" % (rt,rt) )
-			f.write("sp->parent->return_val[0] = %s;\n" % (st) )
+			f.write("*((%s*)sp->parent->return_val[0]) = %s;\n" % (rt,st) )
 		elif ACT_BLOCK == MAIN_BLOCK:
 			f.write("%s = %s;\n" % (global_vars[var],st) )
 		else:
@@ -303,7 +304,7 @@ def translate_call_stat(name,par):
 			f.write(  "*((%s*)sp->outgoing[%s]) = %s;\n" % (t,str(i),str(act) ) )
 
 	f.write(  "_ra=%d;\n" % (return_counter) )
-	f.write(  "goto %s;\n" % (name) )
+	f.write(  "goto %s;\n" % (name.lower()) )
 	f.write(  "return%d:\n" % (return_counter) )
 	return_counter += 1	
 
