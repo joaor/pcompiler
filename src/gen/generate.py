@@ -10,6 +10,8 @@ frames = {}
 #WRONG_NUMBER_OF_ARGUMENTS: SCOPEINNER takes exactly 0 arguments (0 given) 
 #VARIABLE_NOT_ASSIGNED: C (INTEGER) has no value
 #Funcoes com o mesmo nome nao da erro
+#Correspondencia entre argumentos
+#Erro float
 
 return_counter = 0
 var_counter = 0
@@ -60,20 +62,27 @@ def generate(node):
 			generate(child)
 	
 	elif node.type in ["procedure_declaration"]:
-		name = generate(node.children[0])
-		frames[name] = Frame()
+		if len(node.children[0].children)==1:
+			name = generate(node.children[0])
+			frames[name] = Frame()
+		else:
+			name = generate(node.children[0].children[0])
+			frames[name] = Frame()
+			generate(node.children[0].children[1]) #gerar parametros
+				
 		translate_proc_1st(name)
 		generate(node.children[1])
 		translate_proc_2nd(name)
 
 	elif node.type in  ["block","variable_declaration_part","variable_declation_list","compound_statement",
 					"statement_sequence","statement","open_statement","closed_statement",
-					"program_heading","proc_or_func_declaration_list","proc_or_func_declaration"]:
+					"program_heading","proc_or_func_declaration_list","proc_or_func_declaration",
+					"formal_parameter_list","formal_parameter_section_list"]:
 		for child in node.children:
 			generate(child)
 
 	elif node.type in [ "unsigned_constant","relop","addop","expression","actual_parameter",
-					"params","boolean"]:
+					"params","boolean","procedure_heading"]:
 		for child in node.children:
 			return generate(child)
 
@@ -96,7 +105,7 @@ def generate(node):
 			else:
 				return generate(child)
 
-	elif node.type in ["identifier_list","type_denoter","actual_parameter_list"]:
+	elif node.type in [ "identifier_list","type_denoter","actual_parameter_list"]:
 		l = []
 		for child in node.children:
 			r = generate(child)
@@ -147,7 +156,7 @@ def generate(node):
 		else:
 			return [generate(node.children[0]), generate(node.children[1]), generate(node.children[2])]
 
-	elif node.type in ["variable_declaration"]:
+	elif node.type in ["variable_declaration","formal_parameter_section"]:
 		var = generate(node.children[0])
 		typ = generate(node.children[1])
 		if len(var) == len(typ):

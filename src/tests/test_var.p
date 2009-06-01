@@ -5,10 +5,10 @@ a : char;
 b : boolean;
 c : integer;
 
-procedure ScopeInner;
+procedure ScopeInner(s: real; i: integer);
 var K : char;
 begin
-	writeln(a);
+	writeln(i);
 end;
 
 procedure Sco;
@@ -19,6 +19,7 @@ begin
 	z := 4.4;
 	Q := 2.2 * z;	
 	writeln(P);
+	ScopeInner(2.3,P);
 end;
 
 begin 
@@ -32,6 +33,5 @@ begin
   	writeln(a);
   	writeln(b);
   	writeln(c);
-	ScopeInner;
 	Sco;
 end.
