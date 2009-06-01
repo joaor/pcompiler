@@ -1,13 +1,14 @@
 from module import *
+from excep.function_or_procedure_already_defined import *
 
 def go_children(children,f, *args):
 	for child in children:
 		r = f(child, *args)
+		if r==False:	break
 	return r
 
 
-
-def run_tree( node, in_function=False):
+def run_tree( node):
 	if node == None or type(node) == type(1):	return None
 	if type(node) == type(""):	
 		return find_var(node.upper(), stack)
@@ -15,23 +16,23 @@ def run_tree( node, in_function=False):
 	if node.type in ['procedure_declaration', 'function_declaration']:
 		global table
 		table = add_to_stack(Table(), stack)
-		in_function = True
+		
+		try:
+			proc_or_func_creation(node)
+		except FunctionOrProcedureAlreadyDefined, e:
+			print e
+		
+		return
 
-	elif node.type == 'block' and not in_function:
+	elif node.type == 'block':
 		global nm, table
 		table = add_to_stack(Table(nm), stack)
 
-
-	if node.type in ['variable_declaration_part','formal_parameter_section_list']:
+	if node.type == 'variable_declaration_part':
 		go_children(node.children, var_subtree)
-		if in_function and node.type == 'formal_parameter_section_list':
-			stack.proc_func[-1].copy_params(table.hash)
 			
 	elif node.type == 'block_name':
 		nm = node.children[0].upper()
-		if in_function:
-			table.name = nm
-			stack.proc_func.append( ProcAndFunc(nm) )
 			
 	elif node.type == 'function_returning':
 		stack.get_pf().set_returning(node.children[0].upper())
@@ -46,7 +47,7 @@ def run_tree( node, in_function=False):
 			print e
 	
 	else:
-		go_children(node.children, run_tree, in_function)
+		go_children(node.children, run_tree)
 		if node.type == 'block':	
 			stack.pop_frame()
 			#table = stack.stack[-1]
@@ -86,6 +87,40 @@ def var_subtree(node):
 		table.clean()
 	else:
 		go_children(node.children, var_subtree)
+
+
+
+def proc_or_func_creation(node):
+	go_children(node.children, pf_subtree)
+	stack.pop_frame()
+
+def pf_subtree(node):
+	if node.type == 'block_name':
+		try:
+			nm = node.children[0].upper()
+			stack.add_proc_or_func(nm)
+			table.name = nm
+		except FunctionOrProcedureAlreadyDefined, e:
+			print e
+			return False
+	
+	elif node.type == 'block':
+		go_children(node.children, run_tree)
+	
+	elif node.type == 'function_returning':
+		stack.get_pf().set_returning(node.children[0].upper())
+	
+	elif node.type == 'variable_declaration_part':	
+		go_children(node.children, var_subtree)
+		
+	elif node.type == 'formal_parameter_section_list':
+		go_children(node.children, var_subtree)
+		stack.proc_func[-1].copy_params(table.hash)
+	
+	else:
+		r = go_children(node.children, pf_subtree)
+		return r
+
 
 
 def params_subtree(node):
@@ -129,13 +164,15 @@ def function_calling(node, stack):
 
 		return pf.r_type
 	else:
-		raise WrongNumberOfArguments(name, len(pf.params), 0)
+		if len(pf.params)!=0:
+			raise WrongNumberOfArguments(name, len(pf.params), 0)
+		return pf.r_type
 
 
 def assignment_validator(node, var, info):
-	if not info:
-		return
+	if not info:	return
 		
+	#print var, info
 	try:
 		go_children(node.children[1:], assignment_validation, info[0])
 		#assignment_validation(node, info[0])

@@ -1,9 +1,9 @@
 program test2; 
-var j : real; 
+var j : integer; 
 i : integer;
  
 begin 
-j := 1 * 2; 
+j := 1; 
 i := j * (1 + 2);
  
 if 1 > 2 then 

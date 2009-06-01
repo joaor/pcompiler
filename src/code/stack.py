@@ -2,6 +2,8 @@ from excep.variable_already_defined import *
 from excep.variable_declaration_error import *
 from excep.variable_not_defined import *
 from excep.function_or_procedure_not_defined import *
+from excep.function_or_procedure_already_defined import *
+from code.proc_and_func import *
 
 class Stack():
 	def __init__(self):
@@ -21,6 +23,7 @@ class Stack():
 			return self.proc_func[-1].r_type
 			
 		raise VariableNotDefined(identifier)
+		
 		
 	def find_pf(self, name):
 		for i in self.proc_func:
@@ -44,5 +47,12 @@ class Stack():
 		
 	def get_pf(self):
 		return self.proc_func[-1]
+		
+	def add_proc_or_func(self, name):
+		try:	
+			self.find_pf(name)
+			raise FunctionOrProcedureAlreadyDefined(name)
+		except FunctionOrProcedureNotDefined, e:
+			self.proc_func.append( ProcAndFunc(name))
 
 

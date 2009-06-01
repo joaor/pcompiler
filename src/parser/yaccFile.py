@@ -116,7 +116,7 @@ def p_function_declaration(t):
 def p_function_heading(t):
 	#funcao a: real;  ; -> devolve real
 	#funcao b(a,b : real ; VAR g:integer ) : real;  ;  -> devolve real, mas tem argumentos
-	'''function_heading 	: FUNCTION block_name COLON IDENTIFIER 
+	'''function_heading 	: FUNCTION block_name COLON function_returning 
 	 					| FUNCTION block_name formal_parameter_list COLON function_returning'''
 	if len(t)==5:
 		t[0] = AST("function_heading", [t[2],t[4]] )

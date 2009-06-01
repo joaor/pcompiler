@@ -9,7 +9,7 @@ begin
 end;
 
 function Summation (num : integer) : integer;
-var f : integeRi;
+var f : integeR;
 begin
 		writeln(P);
 		f := num;
@@ -22,7 +22,7 @@ end;
 begin
   	A := 20;
   	writeln(A);
-  	ScopeInneri(A);
+  	ScopeInner;
   	writeln(A);
   		begin
   			write(A);
