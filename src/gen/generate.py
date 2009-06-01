@@ -10,14 +10,18 @@ frames = {}
 #WRONG_NUMBER_OF_ARGUMENTS: SCOPEINNER takes exactly 0 arguments (0 given) 
 #VARIABLE_NOT_ASSIGNED: C (INTEGER) has no value
 #Funcoes com o mesmo nome nao da erro
+#Correspondencia entre argumentos
+#Erro float
 
+return_counter = 0
 var_counter = 0
 block_flag = False
+main_flag = False
 MAIN_BLOCK = ""
 ACT_BLOCK = ""
 
 def generate(node):
-	global block_flag,MAIN_BLOCK,ACT_BLOCK
+	global block_flag,main_flag,MAIN_BLOCK,ACT_BLOCK
 	if node == None:
 		return None	
 
@@ -46,25 +50,39 @@ def generate(node):
 		print ACT_BLOCK
 		return ACT_BLOCK
 
-	elif node.type in ["procedure_and_function_declaration_part"]:
+	elif node.type in ["procedure_and_function_declaration_part"] and not main_flag:
 		for child in node.children:
 			generate(child)
+		main = True
+		ACT_BLOCK = MAIN_BLOCK
+		print ACT_BLOCK
 
+	elif node.type in ["procedure_and_function_declaration_part"] and main_flag:
+		for child in node.children:
+			generate(child)
+	
 	elif node.type in ["procedure_declaration"]:
-		name = generate(node.children[0])
-		frames[name] = Frame()
+		if len(node.children[0].children)==1:
+			name = generate(node.children[0])
+			frames[name] = Frame()
+		else:
+			name = generate(node.children[0].children[0])
+			frames[name] = Frame()
+			generate(node.children[0].children[1]) #gerar parametros
+				
 		translate_proc_1st(name)
 		generate(node.children[1])
 		translate_proc_2nd(name)
 
 	elif node.type in  ["block","variable_declaration_part","variable_declation_list","compound_statement",
 					"statement_sequence","statement","open_statement","closed_statement",
-					"program_heading","proc_or_func_declaration_list","proc_or_func_declaration"]:
+					"program_heading","proc_or_func_declaration_list","proc_or_func_declaration",
+					"formal_parameter_list","formal_parameter_section_list"]:
 		for child in node.children:
 			generate(child)
 
 	elif node.type in [ "unsigned_constant","relop","addop","expression","actual_parameter",
-					"params","boolean"]:
+					"params","boolean","procedure_heading"]:
 		for child in node.children:
 			return generate(child)
 
@@ -81,14 +99,13 @@ def generate(node):
 					return global_vars[child]
 				else:
 					if child in frames[ACT_BLOCK].global_vars:
-						v = frames[ACT_BLOCK].global_vars[child]
-						return v
+						return frames[ACT_BLOCK].global_vars[child]
 					else:
 						return global_vars[child]
 			else:
 				return generate(child)
 
-	elif node.type in ["identifier_list","type_denoter","actual_parameter_list"]:
+	elif node.type in [ "identifier_list","type_denoter","actual_parameter_list"]:
 		l = []
 		for child in node.children:
 			r = generate(child)
@@ -107,12 +124,11 @@ def generate(node):
 			f.write("%s = %s;\n" % (global_vars[var],st) )
 		else:
 			if var in frames[ACT_BLOCK].global_vars:
-				v = frames[ACT_BLOCK].global_vars[var]
-				f.write("%s = %s;\n" % (v,st) )
+				f.write("%s = %s;\n" % (frames[ACT_BLOCK].global_vars[var],st) )
 			else:
 				f.write("%s = %s;\n" % (global_vars[var],st) )
 
-	elif node.type in ["procedure_statement"]:
+	elif node.type in ["procedure_statement"]: #LAVAGEM AKI
 		name = generate(node.children[0])
 		
 		if len(node.children)!=1:
@@ -123,61 +139,62 @@ def generate(node):
 		if name == "writeln" or name == "write":
 			par = params[0][0]
 			if par in var_type:
-				par1 = dic_type_c[dic_typ[var_type[par]]]
-				if name == "writeln":
-					par1 = "\"" + par1 + "\\n\""
-				else:
-					par1 = "\"" + par1 + "\""
-				f.write("printf(%s, %s);\n" % (par1,par) )
+				translate_printf_var(name,dic_type_c[dic_typ[var_type[par]]],par)
 
 			elif ACT_BLOCK != MAIN_BLOCK and par in frames[ACT_BLOCK].var_type:
-				par1 = dic_type_c[dic_typ[frames[ACT_BLOCK].var_type[par]]]
-				if name == "writeln":
-					par1 = "\"" + par1 + "\\n\""
-				else:
-					par1 = "\"" + par1 + "\""
-				f.write("printf(%s, %s);\n" % (par1,par) )
+				translate_printf_var(name,dic_type_c[dic_typ[frames[ACT_BLOCK].var_type[par]]],par)
 			
 			else:
-				par = par.replace("\'","\"")
-				if name == "writeln":
-					par = par[:-1]
-					par = par + "\\n\""
-				f.write("printf(%s);\n" % (par))
+				translate_printf(name,par)
+
 		else:
-			#TODO Outras funcoes; podem nao ter parametros!
-			pass
+			translate_call_stat(name)
 
 	elif node.type in ["simple_expression","term"]:
 		if len(node.children) == 1:
-			assg = [generate(node.children[0])]
+			return [generate(node.children[0])]
 		else:
-			assg = [generate(node.children[0]), generate(node.children[1]), generate(node.children[2])]
-		return assg
+			return [generate(node.children[0]), generate(node.children[1]), generate(node.children[2])]
 
-	elif node.type in ["variable_declaration"]:
+	elif node.type in ["variable_declaration","formal_parameter_section"]:
 		var = generate(node.children[0])
 		typ = generate(node.children[1])
 		if len(var) == len(typ):
 			for i in range(len(var)):
 				if ACT_BLOCK == MAIN_BLOCK:
-					w = set_var(var[i],typ[i])
-					f.write( "%s %s;\n" % (w[0],w[1]) )
+					do_main_set_var(var[i],typ[i])
 				else:
-					w = frames[ACT_BLOCK].set_var(var[i],typ[i],dic_typ[typ[i]])
-					nt = dic_typ[w[0]]
-					f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
-				
+					do_frame_set_var(var[i],typ[i],dic_typ[typ[i]])			
 		else:
 			t = typ[0]
 			for v in var:
 				if ACT_BLOCK == MAIN_BLOCK:
-					w = set_var(v,t)
-					f.write("%s %s;\n" % (w[0],w[1]))
+					do_main_set_var(v,t)
 				else:
-					w = frames[ACT_BLOCK].set_var(v,t,dic_typ[t])
-					nt = dic_typ[w[0]]
-					f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
+					do_frame_set_var(v,t,dic_typ[t])
+
+def do_main_set_var(v,t):
+	w = set_var(v,t)
+	f.write("%s %s;\n" % (w[0],w[1]))
+
+def do_frame_set_var(v,t,dt):
+	w = frames[ACT_BLOCK].set_var(v,t,dt)
+	nt = dic_typ[w[0]]
+	f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
+
+def translate_printf_var(name,typ_par,par):
+	if name == "writeln":
+		typ_par = "\"" + typ_par + "\\n\""
+	else:
+		typ_par = "\"" + typ_par + "\""
+	f.write("printf(%s, %s);\n" % (typ_par,par) )
+
+def translate_printf(name,par):
+	par = par.replace("\'","\"")
+	if name == "writeln":
+		par = par[:-1]
+		par = par + "\\n\""
+	f.write("printf(%s);\n" % (par))
 
 def set_var(v,t):
 	global var_counter
@@ -193,9 +210,6 @@ def get_list(lis):
 	else:
 		return str(lis)
 
-
-
-
 def translate_header():
 	f.write(  "#include \"frame.h\"\n"
 			"#include <stdlib.h>\n"
@@ -210,6 +224,7 @@ def translate_header():
 		)
 
 def translate_footer():
+	translate_redirector()
 	f.write(  "return 0;\n"
 			"}\n\n"
 		)
@@ -232,13 +247,20 @@ def translate_proc_2nd(name):
 	f.write(  "%sskip:\n" % (name) )
 
 def translate_redirector():
-	f.write("/*Redirector*/\n")
-	f.write("goto exit;\n")
-	f.write("redirector:\n")
+	global return_counter
+	f.write(  "goto exit;\n"
+			"redirector:\n"
+		)
 
-	for i in range(returncounter):
-		f.write("if(_ra==%d) goto return%d;\n" % (i,i))   #Para cada endereco de retorno, sua label associada
+	for i in range(return_counter):
+		f.write("if(_ra==%d) goto return%d;\n" % (i,i))
 		
-	f.write("exit:\n;\n")
+	f.write("exit:\n")
 
+def translate_call_stat(name):
+	global return_counter
+	f.write(  "_ra=%d;\n" % (return_counter) )
+	f.write(  "goto %s;\n" % (name) )
+	f.write(  "return%d:\n" % (return_counter) )
+	return_counter += 1	
 
