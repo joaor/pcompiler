@@ -8,7 +8,7 @@ begin
 	writeln(A);
 end;
 
-function Summation (num : integer) : integer;
+function Summation (num : real) : integer;
 var f : integeR;
 begin
 		writeln(P);
@@ -22,7 +22,7 @@ end;
 begin
   	A := 20;
   	writeln(A);
-  	ScopeInner;
+  	Summation(2.3);
   	writeln(A);
   		begin
   			write(A);
