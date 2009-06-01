@@ -9,6 +9,14 @@ procedure ScopeInner(s: real; i: integer);
 var K : char;
 begin
 	writeln(i);
+	i := i +1;
+	ScopeInner2(s,i);
+end;
+
+procedure ScopeInner2(s: real; i: integer);
+var K : char;
+begin
+	writeln(i);
 end;
 
 procedure Sco;
@@ -35,4 +43,7 @@ begin
   	writeln(b);
   	writeln(c);
 	Sco;
+	ScopeInner(2.3,c);
+	c := c +1;
+	ScopeInner(5.7,c);
 end.
