@@ -1,4 +1,6 @@
 from excep.argument_type_incompatibility import *
+from excep.name_repeated_in_params import *
+
 
 class ProcAndFunc():
 	def __init__(self, nm):
@@ -6,27 +8,32 @@ class ProcAndFunc():
 		self.params = []
 		self.r_type =None
 		
-	def add_param(self,name,type):
-		if name not in self.params:
-			self.params.append( (name,type))
-		else:
-			print "parametro repetido"
-			#to do raise exception
+	def add_param(self,i):
+		for p in self.params:
+			if p.name == i.name:
+				raise NameRepeatedInParams(i.name)
+		self.params.append(i)
+
 			
-	def copy_params(self, hash):
-		for i in hash:
-			self.add_param(i, hash[i])
+	def copy_params(self, l):
+		for i in l:
+			self.add_param(i)
 		
 	def check_params(self, types):
+		#print types
+		#for i in self.params:
+		#	print i.name, i.type, i.value
+		#print '--------------'
+			
 		for i in range(len(types)):
-			if types[i] != self.params[i][1][0]:
-				raise ArgumentTypeIncompatibility(i+1,self.params[i][1][0],self.name)
+			if types[i] != self.params[i].type:
+				raise ArgumentTypeIncompatibility(i+1,self.params[i].type,self.name)
 		return True
 			
 			
 	def __str__(self, stri = ''):
 		for i in self.params: 
-			stri += str(i)
+			stri += str((i.name,i.type,i.value))
 		return stri
 
 	def set_returning(self, t):

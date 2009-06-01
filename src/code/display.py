@@ -113,7 +113,7 @@ def pf_subtree(node):
 		
 	elif node.type == 'formal_parameter_section_list':
 		go_children(node.children, var_subtree)
-		stack.proc_func[-1].copy_params(table.hash)
+		stack.proc_func[-1].copy_params(table.list)
 	
 	else:
 		r = go_children(node.children, pf_subtree)
@@ -188,7 +188,11 @@ def assignment_validator(node, var, info):
 	except VariableNotAssigned, e:
 		print e
 		return
-	info[1]=True 
+	
+	#print '###########',var.upper()
+	stack.set_value_on_var(var.upper(),True)
+	#print find_var(var.upper(),stack)
+	#info[1]=True 
 
 
 def assignment_validation(node, assignment_type=None, t=None):

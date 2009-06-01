@@ -15,9 +15,8 @@ class Stack():
 
 	def find_var(self, identifier):
 		for i in range(len(self.stack)-1,-1,-1):
-			type = self.stack[i].find(identifier)
-			if type: 
-				return type
+			var = self.stack[i].find(identifier)
+			if var: return [var.type, var.value]
 				
 		if self.proc_func and self.proc_func[-1].name == identifier:
 			return [self.proc_func[-1].r_type, True]
@@ -54,5 +53,13 @@ class Stack():
 			raise FunctionOrProcedureAlreadyDefined(name)
 		except FunctionOrProcedureNotDefined, e:
 			self.proc_func.append( ProcAndFunc(name))
+			
+	def set_value_on_var(self, id, value):
+		for i in range(len(self.stack)-1,-1,-1):
+			var = self.stack[i].find(id)
+			if var: 
+				var.value = value
+	
+	
 
 
