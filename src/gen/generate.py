@@ -130,60 +130,62 @@ def generate(node):
 		if name == "writeln" or name == "write":
 			par = params[0][0]
 			if par in var_type:
-				par1 = dic_type_c[dic_typ[var_type[par]]]
-				if name == "writeln":
-					par1 = "\"" + par1 + "\\n\""
-				else:
-					par1 = "\"" + par1 + "\""
-				f.write("printf(%s, %s);\n" % (par1,par) )
+				translate_printf_var(name,dic_type_c[dic_typ[var_type[par]]],par)
 
 			elif ACT_BLOCK != MAIN_BLOCK and par in frames[ACT_BLOCK].var_type:
-				par1 = dic_type_c[dic_typ[frames[ACT_BLOCK].var_type[par]]]
-				if name == "writeln":
-					par1 = "\"" + par1 + "\\n\""
-				else:
-					par1 = "\"" + par1 + "\""
-				f.write("printf(%s, %s);\n" % (par1,par) )
+				translate_printf_var(name,dic_type_c[dic_typ[frames[ACT_BLOCK].var_type[par]]],par)
 			
 			else:
-				par = par.replace("\'","\"")
-				if name == "writeln":
-					par = par[:-1]
-					par = par + "\\n\""
-				f.write("printf(%s);\n" % (par))
+				translate_printf(name,par)
+
 		else:
 			translate_call_stat(name)
 
 	elif node.type in ["simple_expression","term"]:
 		if len(node.children) == 1:
-			assg = [generate(node.children[0])]
+			return [generate(node.children[0])]
 		else:
-			assg = [generate(node.children[0]), generate(node.children[1]), generate(node.children[2])]
-		return assg
+			return [generate(node.children[0]), generate(node.children[1]), generate(node.children[2])]
 
-	elif node.type in ["variable_declaration"]: #LAVAGEM AKI, EM 2 VERTENTES
+	elif node.type in ["variable_declaration"]:
 		var = generate(node.children[0])
 		typ = generate(node.children[1])
 		if len(var) == len(typ):
 			for i in range(len(var)):
 				if ACT_BLOCK == MAIN_BLOCK:
-					w = set_var(var[i],typ[i])
-					f.write( "%s %s;\n" % (w[0],w[1]) )
+					do_main_set_var(var[i],typ[i])
 				else:
-					w = frames[ACT_BLOCK].set_var(var[i],typ[i],dic_typ[typ[i]])
-					nt = dic_typ[w[0]]
-					f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
-				
+					do_frame_set_var(var[i],typ[i],dic_typ[typ[i]])			
 		else:
 			t = typ[0]
 			for v in var:
 				if ACT_BLOCK == MAIN_BLOCK:
-					w = set_var(v,t)
-					f.write("%s %s;\n" % (w[0],w[1]))
+					do_main_set_var(v,t)
 				else:
-					w = frames[ACT_BLOCK].set_var(v,t,dic_typ[t])
-					nt = dic_typ[w[0]]
-					f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
+					do_frame_set_var(v,t,dic_typ[t])
+
+def do_main_set_var(v,t):
+	w = set_var(v,t)
+	f.write("%s %s;\n" % (w[0],w[1]))
+
+def do_frame_set_var(v,t,dt):
+	w = frames[ACT_BLOCK].set_var(v,t,dt)
+	nt = dic_typ[w[0]]
+	f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
+
+def translate_printf_var(name,typ_par,par):
+	if name == "writeln":
+		typ_par = "\"" + typ_par + "\\n\""
+	else:
+		typ_par = "\"" + typ_par + "\""
+	f.write("printf(%s, %s);\n" % (typ_par,par) )
+
+def translate_printf(name,par):
+	par = par.replace("\'","\"")
+	if name == "writeln":
+		par = par[:-1]
+		par = par + "\\n\""
+	f.write("printf(%s);\n" % (par))
 
 def set_var(v,t):
 	global var_counter
@@ -198,9 +200,6 @@ def get_list(lis):
 		return "(%s)" % " ".join([ get_list(i) for i in lis ]) 	
 	else:
 		return str(lis)
-
-
-
 
 def translate_header():
 	f.write(  "#include \"frame.h\"\n"
