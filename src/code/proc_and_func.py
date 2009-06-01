@@ -17,6 +17,7 @@ class ProcAndFunc():
 			
 	def copy_params(self, l):
 		for i in l:
+			i.value = True
 			self.add_param(i)
 		
 	def check_params(self, types):

@@ -10,7 +10,7 @@ yacc.yacc()
 t = yacc.parse(s)
 run_tree(t)
 #display(t)
-generate(t)
+#generate(t)
 #print stack.length()
 print '-----------------'
 print stack.display()
