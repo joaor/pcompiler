@@ -116,6 +116,8 @@ def generate(node):
 	elif node.type in ["primary"]:
 		for child in node.children:
 			if type(child) == type(""):
+				if child.lower() in frames:
+					return (child.lower(),[])
 				if ACT_BLOCK == MAIN_BLOCK:
 					return global_vars[child]
 				else:
@@ -139,6 +141,8 @@ def generate(node):
 	elif node.type in ["assignment_statement"]:
 		var = generate(node.children[0])
 		assg = generate(node.children[1])
+		print var
+		print assg
 		if type(assg[0][0]) == type(()):
 			translate_call_stat(assg[0][0][0].lower(),assg[0][0][1],var)
 		
