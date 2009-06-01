@@ -14,6 +14,7 @@ frames = {}
 #Erro float
 #Estamos a cagar para funcoes k nao devolvem nada
 #falha kando se chma funcao/proc do estilo ola(2+3,9)
+#falha kando se chma funcao/proc do estilo ola(ola(4),9)
 
 return_counter = 0
 var_counter = 0
@@ -141,8 +142,7 @@ def generate(node):
 	elif node.type in ["assignment_statement"]:
 		var = generate(node.children[0])
 		assg = generate(node.children[1])
-		print var
-		print assg
+		
 		if type(assg[0][0]) == type(()):
 			translate_call_stat(assg[0][0][0].lower(),assg[0][0][1],var)
 		

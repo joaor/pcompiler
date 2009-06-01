@@ -5,8 +5,6 @@ a : char;
 b : boolean;
 c,v : integer;
 
-
-
 function Add(i, j:Integer): Integer;
 begin
 	writeln('ola');
@@ -16,13 +14,22 @@ end;
 function Sub : real;
 begin
 	writeln('ole');
-   	Sub := 3.9;
+	c := Add(6,7);
+		begin
+			Sub := 3.9;
+		end;
+   	writeln(c);
 end;
 
-
-begin 
-	v := Add(3,2);
-	writeln(v);
-	z := Sub;
-	write(z);
+begin
+  	c := 20;
+  	writeln(c);
+  		begin
+  			c := 6;
+			v := Add(3,c);
+			writeln(v);
+			z := Sub;
+			writeln(z);
+  		end;
 end.
+
