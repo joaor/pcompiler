@@ -139,20 +139,25 @@ def generate(node):
 	elif node.type in ["assignment_statement"]:
 		var = generate(node.children[0])
 		assg = generate(node.children[1])
-		st = get_list(assg)
-		if var.lower() == ACT_BLOCK:
-			rt = dic_typ[frames[ACT_BLOCK].return_typ]
-			f.write("sp->parent->return_val[0] = (%s*)malloc(sizeof(%s));\n" % (rt,rt) )
-			f.write("*((%s*)sp->parent->return_val[0]) = %s;\n" % (rt,st) )
-		elif ACT_BLOCK == MAIN_BLOCK:
-			f.write("%s = %s;\n" % (global_vars[var],st) )
+		if type(assg[0][0]) == type(()):
+			translate_call_stat(assg[0][0][0].lower(),assg[0][0][1],var)
+		
 		else:
-			if var in frames[ACT_BLOCK].global_vars:
-				f.write("%s = %s;\n" % (frames[ACT_BLOCK].global_vars[var],st) )
-			else:
+			st = get_list(assg)
+		
+			if var.lower() == ACT_BLOCK:
+				rt = dic_typ[frames[ACT_BLOCK].return_typ]
+				f.write("sp->parent->return_val[0] = (%s*)malloc(sizeof(%s));\n" % (rt,rt) )
+				f.write("*((%s*)sp->parent->return_val[0]) = %s;\n" % (rt,st) )
+			elif ACT_BLOCK == MAIN_BLOCK:
 				f.write("%s = %s;\n" % (global_vars[var],st) )
+			else:
+				if var in frames[ACT_BLOCK].global_vars:
+					f.write("%s = %s;\n" % (frames[ACT_BLOCK].global_vars[var],st) )
+				else:
+					f.write("%s = %s;\n" % (global_vars[var],st) )
 
-	elif node.type in ["procedure_statement"]:
+	elif node.type in ["procedure_statement","function_designator"]:
 		name = generate(node.children[0])
 		
 		if len(node.children)!=1:
@@ -160,6 +165,8 @@ def generate(node):
 		else:
 			params = None
 	
+		if node.type == "function_designator":
+			return (name,params)
 		if name == "writeln" or name == "write":
 			par = params[0][0]
 			if par in var_type:
@@ -183,8 +190,6 @@ def generate(node):
 	elif node.type in ["variable_declaration","formal_parameter_section"]:
 		var = generate(node.children[0])
 		typ = generate(node.children[1])
-		print var
-		print typ
 		if len(var) == len(typ):
 			for i in range(len(var)):
 				if ACT_BLOCK == MAIN_BLOCK:
@@ -286,7 +291,7 @@ def translate_redirector():
 		
 	f.write("exit:\n")
 
-def translate_call_stat(name,par):
+def translate_call_stat(name,par,var=None):
 	global return_counter
 	if par != None:
 		for i in range(len(par)):
@@ -306,6 +311,15 @@ def translate_call_stat(name,par):
 	f.write(  "_ra=%d;\n" % (return_counter) )
 	f.write(  "goto %s;\n" % (name.lower()) )
 	f.write(  "return%d:\n" % (return_counter) )
+	if var !=None:
+		t = dic_typ[frames[name].return_typ]
+		if ACT_BLOCK == MAIN_BLOCK:
+			f.write("%s = *((%s*)sp->return_val[0]);\n" % (global_vars[var],t) )
+		else:
+			if var in frames[ACT_BLOCK].global_vars:
+				f.write("%s = *((%s*)sp->return_val[0]);\n" % (frames[ACT_BLOCK].global_vars[var],t) )
+			else:
+				f.write("%s = *((%s*)sp->return_val[0]);\n" % (global_vars[var],t) )
 	return_counter += 1	
 
 def get_type(v):

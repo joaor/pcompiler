@@ -11,20 +11,18 @@ function Add(i, j:Integer): Integer;
 begin
 	writeln('ola');
    	Add := i + j;
-	c := i + j;
-	writeln(c);
 end;
 
 function Sub : real;
 begin
 	writeln('ole');
-   	Sub := 3.9 - 2.2;
+   	Sub := 3.9;
 end;
 
 
 begin 
-
-
 	v := Add(3,2);
+	writeln(v);
 	z := Sub;
+	write(z);
 end.
