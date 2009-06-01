@@ -8,15 +8,15 @@ begin
 	writeln(A);
 end;
 
-function Summation (num : real) : integer;
-var f : integeR;
+function Summation (num : real) : real;
+var f : real;
 begin
 		writeln(P);
 		f := num;
   	if num = 1 then
-    		Summation := 1
+    		Summation := 1.1
   	else
-    		f := Summation(f)
+    		f := Summation(num)
 end;
 
 begin

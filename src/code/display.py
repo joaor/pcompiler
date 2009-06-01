@@ -126,8 +126,17 @@ def params_subtree(node):
 	if node == None: return
 	if type(node) == type(""):
 		f= find_var(node, stack)
-		if f: return [f]
+		if f: 
+			return [f[0]]
 	
+	elif type(node) == type(1):
+		return ['INTEGER']
+
+	elif type(node) == type(1.1):
+		return ['REAL']
+	
+	elif node.type == 'boolean':
+		return ['BOOLEAN'] 
 	
 	else:		
 		for child in node.children:
