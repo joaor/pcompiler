@@ -64,13 +64,13 @@ def generate(node):
 	elif node.type in ["procedure_declaration"]:
 		if len(node.children[0].children)==1:
 			name = generate(node.children[0])
-			frames[name] = Frame()
 		else:
 			name = generate(node.children[0].children[0])
-			frames[name] = Frame()
-			generate(node.children[0].children[1]) #gerar parametros
-				
+
+		frames[name] = Frame()
 		translate_proc_1st(name)
+		if len(node.children[0].children)!=1:
+			generate(node.children[0].children[1]) #gerar parametros			
 		generate(node.children[1])
 		translate_proc_2nd(name)
 
@@ -128,7 +128,7 @@ def generate(node):
 			else:
 				f.write("%s = %s;\n" % (global_vars[var],st) )
 
-	elif node.type in ["procedure_statement"]: #LAVAGEM AKI
+	elif node.type in ["procedure_statement"]:
 		name = generate(node.children[0])
 		
 		if len(node.children)!=1:
@@ -148,7 +148,7 @@ def generate(node):
 				translate_printf(name,par)
 
 		else:
-			translate_call_stat(name)
+			translate_call_stat(name,params)
 
 	elif node.type in ["simple_expression","term"]:
 		if len(node.children) == 1:
@@ -164,23 +164,26 @@ def generate(node):
 				if ACT_BLOCK == MAIN_BLOCK:
 					do_main_set_var(var[i],typ[i])
 				else:
-					do_frame_set_var(var[i],typ[i],dic_typ[typ[i]])			
+					do_frame_set_var(var[i],typ[i],dic_typ[typ[i]],node.type)			
 		else:
 			t = typ[0]
 			for v in var:
 				if ACT_BLOCK == MAIN_BLOCK:
 					do_main_set_var(v,t)
 				else:
-					do_frame_set_var(v,t,dic_typ[t])
+					do_frame_set_var(v,t,dic_typ[t],node.type)
 
 def do_main_set_var(v,t):
 	w = set_var(v,t)
 	f.write("%s %s;\n" % (w[0],w[1]))
 
-def do_frame_set_var(v,t,dt):
-	w = frames[ACT_BLOCK].set_var(v,t,dt)
-	nt = dic_typ[w[0]]
-	f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
+def do_frame_set_var(v,t,dt,node):
+	w = frames[ACT_BLOCK].set_var(v,t,dt)	
+	if node == "variable_declaration":
+		nt = dic_typ[w[0]]
+		f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
+	else:
+		f.write( "sp->locals[%s]=sp->parent->outgoing[%s];\n" % (w[1],w[1]) )
 
 def translate_printf_var(name,typ_par,par):
 	if name == "writeln":
@@ -257,10 +260,43 @@ def translate_redirector():
 		
 	f.write("exit:\n")
 
-def translate_call_stat(name):
+def translate_call_stat(name,par): #falha kando se chma funcao estilo ola(2+3,9)
 	global return_counter
+	if par != None:
+		for i in range(len(par)):
+			t = None
+			act = par[i][0]
+			if ACT_BLOCK == MAIN_BLOCK:
+				if act in var_type:
+					t = dic_typ[var_type[act]]
+			else:
+				if act in frames[ACT_BLOCK].var_type:
+					t = dic_typ[frames[ACT_BLOCK].var_type[act]]
+			if t==None:
+				t = get_type(act)
+			f.write(  "sp->outgoing[%s] = (%s*)malloc(sizeof(%s));\n" % (str(i),t,t) )
+			f.write(  "*((%s*)sp->outgoing[%s]) = %s;\n" % (t,str(i),str(act) ) )
+
 	f.write(  "_ra=%d;\n" % (return_counter) )
 	f.write(  "goto %s;\n" % (name) )
 	f.write(  "return%d:\n" % (return_counter) )
 	return_counter += 1	
+#sp->outgoing[0]=(float*)malloc(sizeof(float));
+#*((float*)sp->outgoing[0]) = 2.3;
+#sp->outgoing[1]=(int*)malloc(sizeof(int));
+#*((int*)sp->outgoing[1])  = *((int*)sp->locals[0]);
+
+def get_type(v):
+	if type(v) == type(1):
+		return "int"
+	elif type(v) == type(1.2):
+		return "float"
+	elif len(v) == 3:
+		return "char"
+	else:
+		return "int"
+
+
+
+
 
