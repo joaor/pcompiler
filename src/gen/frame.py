@@ -6,10 +6,11 @@ class Frame(object):
 		self.var_type = {}
 		self.var_counter = 0
 
-	def set_var(self,v,t):
+	def set_var(self,v,t,tc):
 		next = str(self.var_counter)
-		self.global_vars[v] = next
-		self.var_type[next] = t
+		var = "*((%s*)sp->locals[%s])" % (tc,next)
+		self.global_vars[v] = var
+		self.var_type[var] = t
 		self.var_counter += 1	
-		return (self.var_type[next],next)
+		return (self.var_type[var],next)
 

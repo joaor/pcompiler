@@ -82,8 +82,7 @@ def generate(node):
 				else:
 					if child in frames[ACT_BLOCK].global_vars:
 						v = frames[ACT_BLOCK].global_vars[child]
-						st = "*((%s*)sp->locals[%s])" % (dic_typ[frames[ACT_BLOCK].var_type[v]],v)
-						return st
+						return v
 					else:
 						return global_vars[child]
 			else:
@@ -109,8 +108,7 @@ def generate(node):
 		else:
 			if var in frames[ACT_BLOCK].global_vars:
 				v = frames[ACT_BLOCK].global_vars[var]
-				t = dic_typ[frames[ACT_BLOCK].var_type[v]]
-				f.write("*((%s*)sp->locals[%s])=%s;\n" % (t,v,st) )
+				f.write("%s = %s;\n" % (v,st) )
 			else:
 				f.write("%s = %s;\n" % (global_vars[var],st) )
 
@@ -131,6 +129,15 @@ def generate(node):
 				else:
 					par1 = "\"" + par1 + "\""
 				f.write("printf(%s, %s);\n" % (par1,par) )
+
+			elif ACT_BLOCK != MAIN_BLOCK and par in frames[ACT_BLOCK].var_type:
+				par1 = dic_type_c[dic_typ[frames[ACT_BLOCK].var_type[par]]]
+				if name == "writeln":
+					par1 = "\"" + par1 + "\\n\""
+				else:
+					par1 = "\"" + par1 + "\""
+				f.write("printf(%s, %s);\n" % (par1,par) )
+			
 			else:
 				par = par.replace("\'","\"")
 				if name == "writeln":
@@ -157,7 +164,7 @@ def generate(node):
 					w = set_var(var[i],typ[i])
 					f.write( "%s %s;\n" % (w[0],w[1]) )
 				else:
-					w = frames[ACT_BLOCK].set_var(var[i],typ[i])
+					w = frames[ACT_BLOCK].set_var(var[i],typ[i],dic_typ[typ[i]])
 					nt = dic_typ[w[0]]
 					f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
 				
@@ -168,7 +175,7 @@ def generate(node):
 					w = set_var(v,t)
 					f.write("%s %s;\n" % (w[0],w[1]))
 				else:
-					w = frames[ACT_BLOCK].set_var(v,t)
+					w = frames[ACT_BLOCK].set_var(v,t,dic_typ[t])
 					nt = dic_typ[w[0]]
 					f.write( "sp->locals[%s]=(%s*)malloc(sizeof(%s));\n" % (w[1],nt,nt) )
 
