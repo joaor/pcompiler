@@ -5,45 +5,23 @@ a : char;
 b : boolean;
 c : integer;
 
-procedure ScopeInner(s: real; i: integer);
-var K : char;
+
+
+function Add(i, j:Integer): Integer;
 begin
-	writeln(i);
-	i := i +1;
-	ScopeInner2(s,i);
+   	Add := i + j;
 end;
 
-procedure ScopeInner2(s: real; i: integer);
-var K : char;
+function Sub : real;
 begin
-	writeln(i);
+   	Sub := 3.9 - 2.2;
 end;
 
-procedure Sco;
-var P : integer;
-Q,z: real; 
-begin
-	P := 10 + c;
-	z := 4.4;
-	Q := 2.2 * z;	
-	writeln(P);
-	P := P + 1;
-	ScopeInner(2.3,P);
-end;
 
 begin 
-   	z := 2.2;
-  	y := 1.3 + z;
-  	a := 'y';
-  	b := faLse;
-  	c := 2 + 5*2 + 4 mod 7 div 6;
-  	write('O mod z e: ');
-  	writeln(y);
-  	writeln(a);
-  	writeln(b);
-  	writeln(c);
-	Sco;
-	ScopeInner(2.3,c);
-	c := c +1;
-	ScopeInner(5.7,c);
+
+	c := Add(3,2);
+	writeln(c);
+	z := Sub;
+	writeln(z);
 end.

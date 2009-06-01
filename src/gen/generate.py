@@ -12,6 +12,8 @@ frames = {}
 #Funcoes com o mesmo nome nao da erro
 #Correspondencia entre argumentos
 #Erro float
+#Estamos a cagar para funcoes k nao devolvem nada
+#falha kando se chma funcao/proc do estilo ola(2+3,9)
 
 return_counter = 0
 var_counter = 0
@@ -44,9 +46,9 @@ def generate(node):
 	elif node.type in ["block_name"]:
 		b = node.children[0]
 		if not block_flag:
-			MAIN_BLOCK = b
+			MAIN_BLOCK = b.lower()
 			block_flag = True
-		ACT_BLOCK = b
+		ACT_BLOCK = b.lower()
 		print ACT_BLOCK
 		return ACT_BLOCK
 
@@ -61,6 +63,21 @@ def generate(node):
 		for child in node.children:
 			generate(child)
 	
+	elif node.type in ["function_declaration"]: #LIMPEZA NEED
+		name = generate(node.children[0].children[0])
+		
+		if len(node.children[0].children) ==3:
+			retur = generate(node.children[0].children[2]) # return value
+			frames[name] = Frame(retur.lower())
+			par = generate(node.children[0].children[1]) #gerar parametros
+		else:
+			retur = generate(node.children[0].children[1]) # return value
+			frames[name] = Frame(retur.lower())
+
+		translate_proc_1st(name)
+		generate(node.children[1]) # corpo da func
+		translate_proc_2nd(name)
+
 	elif node.type in ["procedure_declaration"]:
 		if len(node.children[0].children)==1:
 			name = generate(node.children[0])
@@ -71,7 +88,7 @@ def generate(node):
 		translate_proc_1st(name)
 		if len(node.children[0].children)!=1:
 			generate(node.children[0].children[1]) #gerar parametros			
-		generate(node.children[1])
+		generate(node.children[1]) #corpo do proc
 		translate_proc_2nd(name)
 
 	elif node.type in  ["block","variable_declaration_part","variable_declation_list","compound_statement",
@@ -82,7 +99,7 @@ def generate(node):
 			generate(child)
 
 	elif node.type in [ "unsigned_constant","relop","addop","expression","actual_parameter",
-					"params","boolean","procedure_heading"]:
+					"params","boolean","procedure_heading","function_returning"]:
 		for child in node.children:
 			return generate(child)
 
@@ -119,8 +136,14 @@ def generate(node):
 		var = generate(node.children[0])
 		assg = generate(node.children[1])
 		st = get_list(assg)
-
-		if ACT_BLOCK == MAIN_BLOCK:
+		
+		if var.lower() == ACT_BLOCK:
+			print var
+			print st
+			rt = dic_typ[frames[ACT_BLOCK].return_typ]
+			f.write("sp->parent->return_val[0] = (%s*)malloc(sizeof(%s));\n" % (rt,rt) )
+			f.write("sp->parent->return_val[0] = %s;\n" % (st) )
+		elif ACT_BLOCK == MAIN_BLOCK:
 			f.write("%s = %s;\n" % (global_vars[var],st) )
 		else:
 			if var in frames[ACT_BLOCK].global_vars:
@@ -159,14 +182,16 @@ def generate(node):
 	elif node.type in ["variable_declaration","formal_parameter_section"]:
 		var = generate(node.children[0])
 		typ = generate(node.children[1])
+		print var
+		print typ
 		if len(var) == len(typ):
 			for i in range(len(var)):
 				if ACT_BLOCK == MAIN_BLOCK:
-					do_main_set_var(var[i],typ[i])
+					do_main_set_var(var[i],typ[i].lower())
 				else:
-					do_frame_set_var(var[i],typ[i],dic_typ[typ[i]],node.type)			
+					do_frame_set_var(var[i],typ[i].lower(),dic_typ[typ[i].lower()],node.type)			
 		else:
-			t = typ[0]
+			t = typ[0].lower()
 			for v in var:
 				if ACT_BLOCK == MAIN_BLOCK:
 					do_main_set_var(v,t)
@@ -260,7 +285,7 @@ def translate_redirector():
 		
 	f.write("exit:\n")
 
-def translate_call_stat(name,par): #falha kando se chma funcao estilo ola(2+3,9)
+def translate_call_stat(name,par):
 	global return_counter
 	if par != None:
 		for i in range(len(par)):
@@ -281,10 +306,6 @@ def translate_call_stat(name,par): #falha kando se chma funcao estilo ola(2+3,9)
 	f.write(  "goto %s;\n" % (name) )
 	f.write(  "return%d:\n" % (return_counter) )
 	return_counter += 1	
-#sp->outgoing[0]=(float*)malloc(sizeof(float));
-#*((float*)sp->outgoing[0]) = 2.3;
-#sp->outgoing[1]=(int*)malloc(sizeof(int));
-#*((int*)sp->outgoing[1])  = *((int*)sp->locals[0]);
 
 def get_type(v):
 	if type(v) == type(1):

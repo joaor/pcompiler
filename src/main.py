@@ -9,11 +9,11 @@ s = get_program()
 yacc.yacc()
 t = yacc.parse(s)
 run_tree(t)
-#display(t)
-#generate(t)
+display(t)
+generate(t)
 #print stack.length()
-print '-----------------'
-print stack.display()
-print '-----------------'
-print 'number of func/proc:', len(stack.proc_func)
-for i in stack.proc_func:	print i.name,i,i.r_type
+#print '-----------------'
+#print stack.display()
+#print '-----------------'
+#print 'number of func/proc:', len(stack.proc_func)
+#for i in stack.proc_func:	print i.name,i,i.r_type

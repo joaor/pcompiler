@@ -105,16 +105,15 @@ def p_procedure_heading(t):
 
 #Declaracao de funcoes---------------------------------------------------------
 def p_function_declaration(t):
-	#funcao a;  ;-> nao devolve nada
-	'''function_declaration 	: FUNCTION block_name SEMICOLON block
- 						| function_heading SEMICOLON block'''
+	#funcao a;  ;-> nao devolve nada -> foi apagada
+	'''function_declaration 	: function_heading SEMICOLON block'''
 	if len(t)==5:
 		t[0] = AST("function_declaration", [t[2],t[4]] )
 	else:
 		t[0] = AST("function_declaration", [t[1],t[3]] )
 
 def p_function_heading(t):
-	#funcao a: real;  ; -> devolve real
+	#funcao a: real;  ; -> devolve real 
 	#funcao b(a,b : real ; VAR g:integer ) : real;  ;  -> devolve real, mas tem argumentos
 	'''function_heading 	: FUNCTION block_name COLON function_returning 
 	 					| FUNCTION block_name formal_parameter_list COLON function_returning'''
