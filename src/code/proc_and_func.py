@@ -20,7 +20,7 @@ class ProcAndFunc():
 	def check_params(self, types):
 		for i in range(len(types)):
 			if types[i] != self.params[i][1]:
-				raise ArgumentTypeIncompatibility(i+1,self.params[i][1],self.name)
+				raise ArgumentTypeIncompatibility(i+1,self.params[i][1][0],self.name)
 		return True
 			
 			

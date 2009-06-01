@@ -20,7 +20,7 @@ class Stack():
 				return type
 				
 		if self.proc_func and self.proc_func[-1].name == identifier:
-			return self.proc_func[-1].r_type
+			return [self.proc_func[-1].r_type, True]
 			
 		raise VariableNotDefined(identifier)
 		
