@@ -4,7 +4,7 @@ c : integer;
 
 begin
   	c := 20;
-	if ((c <> 20) or (c = 20)) then
+	if not ((c <> 20) or (c = 20)) then
 		begin
 			writeln('PI');
 			writeln('PI');
