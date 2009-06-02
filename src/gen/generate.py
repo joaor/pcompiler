@@ -15,6 +15,8 @@ frames = {}
 #Estamos a cagar para funcoes k nao devolvem nada
 #falha kando se chma funcao/proc do estilo ola(2+3,9)
 #falha kando se chma funcao/proc do estilo ola(ola(4),9)
+#VARIABLE_NOT_DEFINED: NOT
+
 
 return_counter = 0
 var_counter = 0
@@ -112,17 +114,15 @@ def generate(node):
 	elif node.type in ["closed_if_statement","open_if_statement"]:
 		stat_counter += 1
 		a = stat_counter
-		f.write("if %s goto then%d;\n" % (get_list(generate(node.children[0])),a) )
+		l = get_list(generate(node.children[0]))
+		f.write("if %s goto then%d;\n" % (l,a) )
 		if len(node.children) == 3:
-			generate(node.children[2])
-		
+			generate(node.children[2])		
 		f.write("goto endif%d;\n" % (a) )
 		f.write("then%d:\n" % (a) )
-		generate(node.children[1])
-		
+		generate(node.children[1])		
 		f.write("endif%d:\n" % (a) )
 		
-
 	elif node.type in ["mulop","relop","addop"]:
 		st = generate(node.children[0])
 		if st in dic_trans:
@@ -130,6 +130,8 @@ def generate(node):
 		return st
 
 	elif node.type in ["primary"]:
+		if len(node.children) == 2:
+			return [dic_trans[generate(node.children[0])],generate(node.children[1])]
 		for child in node.children:
 			if type(child) == type(""):
 				if child.lower() in frames:

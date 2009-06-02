@@ -303,6 +303,8 @@ def p_primary(t):
  				| NOT primary'''
 	if len(t)==2:
 		t[0] = AST("primary", [t[1]] )
+	elif len(t)==3:
+		t[0] = AST("primary", [t[1],t[2]] )
 	else:
 		t[0] = AST("primary", [t[2]] )
 

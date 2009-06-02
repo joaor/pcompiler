@@ -9,7 +9,7 @@ begin
 			writeln('PI');
 			writeln('PI');
 		end;
-	if c = 20 then 
+	if c >= 20 then 
 		begin
 			if c = 21 then 
 				begin
@@ -21,8 +21,8 @@ begin
 				end
 			else
 				begin
-					writeln('P00');
-					writeln('P00');
+					writeln('Pyy');
+					writeln('Pyy');
 				end
 		end
 	else
