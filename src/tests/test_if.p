@@ -1,9 +1,17 @@
 program test_var; 
 var 
-c : integer;
+c,a : integer;
 
 begin
   	c := 20;
+
+	a := 1;
+	while a < 6 do
+	  	begin
+	    		writeln (a);
+	   		 a := a + 1
+	  	end;
+
 	if not ((c <> 20) or (c = 20)) then
 		begin
 			writeln('PI');

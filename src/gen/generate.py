@@ -122,7 +122,17 @@ def generate(node):
 		f.write("then%d:\n" % (a) )
 		generate(node.children[1])		
 		f.write("endif%d:\n" % (a) )
-		
+
+	elif node.type in ["closed_while_statement","open_while_statement"]:
+		stat_counter += 1
+		a = stat_counter
+		l = get_list(generate(node.children[0]))
+		f.write("while%d:\n" % (a) )
+		f.write("if (!(%s)) goto endwhile%d;\n" % (l,a) )
+		generate(node.children[1])
+		f.write("goto while%d;\n" % (a) )
+		f.write("endwhile%d:\n" % (a) )		
+
 	elif node.type in ["mulop","relop","addop"]:
 		st = generate(node.children[0])
 		if st in dic_trans:
