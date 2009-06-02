@@ -16,7 +16,7 @@ frames = {}
 #falha kando se chma funcao/proc do estilo ola(2+3,9)
 #falha kando se chma funcao/proc do estilo ola(ola(4),9)
 #VARIABLE_NOT_DEFINED: NOT
-
+#FOR esta exclusive -> 1 to 5 (1,2,3,4)
 
 return_counter = 0
 var_counter = 0
@@ -106,7 +106,7 @@ def generate(node):
 		for child in node.children:
 			generate(child)
 
-	elif node.type in [ "unsigned_constant","actual_parameter",
+	elif node.type in [ "unsigned_constant","actual_parameter","direction",
 					"params","boolean","procedure_heading","function_returning"]:
 		for child in node.children:
 			return generate(child)
@@ -132,6 +132,31 @@ def generate(node):
 		generate(node.children[1])
 		f.write("goto while%d;\n" % (a) )
 		f.write("endwhile%d:\n" % (a) )		
+
+	elif node.type in ["closed_for_statement","open_for_statement"]:
+		stat_counter += 1
+		a = stat_counter
+		var = generate(node.children[0])
+		assg = generate(node.children[1])
+		if ACT_BLOCK == MAIN_BLOCK:
+			v = global_vars[var]
+		else:
+			if var in frames[ACT_BLOCK].global_vars:
+				v = frames[ACT_BLOCK].global_vars[var]
+			else:
+				v = global_vars[var]
+		f.write("%s = %s;\n" % (v,get_list(assg)) )
+		direction = generate(node.children[2]).lower()
+		limit = generate(node.children[3])
+		f.write("for%d:\n" % (a) )
+		f.write("if (!(%s < %s)) goto endfor%d;\n" % (v,str(limit[0][0]),a) )
+		generate(node.children[4])
+		f.write("%s = %s + 1;\n" % (v,v) )
+		f.write("goto for%d;\n" % (a) )
+		f.write("endfor%d:\n" % (a) )
+		
+		print limit
+		print direction
 
 	elif node.type in ["mulop","relop","addop"]:
 		st = generate(node.children[0])

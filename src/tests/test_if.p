@@ -1,15 +1,25 @@
 program test_var; 
 var 
-c,a : integer;
+c,a,sum,count : integer;
 
 begin
-  	c := 20;
-
+  	
+	sum := 1;
+	for count := 1 to 5 do	
+		begin
+  			sum := sum + count;
+			writeln (sum);
+		end;
+	writeln ('passou para o while');
 	a := 1;
 	while a < 6 do
 	  	begin
-	    		writeln (a);
-	   		 a := a + 1
+	    		while a < 6 do
+			  	begin
+			    		writeln (a);
+			   		 a := a + 1
+			  	end;
+			writeln ('vou a casa');
 	  	end;
 
 	if not ((c <> 20) or (c = 20)) then
@@ -17,6 +27,8 @@ begin
 			writeln('PI');
 			writeln('PI');
 		end;
+
+	c := 20;
 	if c >= 20 then 
 		begin
 			if c = 21 then 

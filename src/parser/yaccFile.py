@@ -218,6 +218,7 @@ def p_closed_for_statement(t):
 def p_direction(t):
 	'''direction 	: TO
  				| DOWNTO'''
+	t[0] = AST("direction", [t[1]] )
 
 #IF e atribuicao de valores a variaveis-----------------------------------------------------------------------
 # program a; begin a:=0; b:=1; if a=b then begin a:=1 end; end.
