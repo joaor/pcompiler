@@ -3,7 +3,7 @@ from frame import *
 f = open("gen/c_code/output.c",'w')
 dic_typ = {"integer":"int","real":"float","char":"char","boolean":"int"}
 dic_type_c = {"int":"%d","float":"%f","char":"%c"}
-dic_trans = {"mod":"%","div":"/"}
+dic_trans = {"mod":"%","div":"/","=":"==","and":"&&","<>":"!=","or":"||","not":"!"}
 global_vars = {} #{'y': 'g0', 'a': 'g2', 'c': 'g4', 'z': 'g1', 'b': 'g3'}
 var_type = {} #{'g4': 'integer', 'g3': 'boolean', 'g2': 'char', 'g1': 'real', 'g0': 'real'}
 frames = {}
@@ -18,13 +18,14 @@ frames = {}
 
 return_counter = 0
 var_counter = 0
+stat_counter = 0
 block_flag = False
 main_flag = False
 MAIN_BLOCK = ""
 ACT_BLOCK = ""
 
 def generate(node):
-	global block_flag,main_flag,MAIN_BLOCK,ACT_BLOCK
+	global block_flag,main_flag,MAIN_BLOCK,ACT_BLOCK,stat_counter
 	if node == None:
 		return None	
 
@@ -103,15 +104,29 @@ def generate(node):
 		for child in node.children:
 			generate(child)
 
-	elif node.type in [ "unsigned_constant","relop","addop","expression","actual_parameter",
+	elif node.type in [ "unsigned_constant","actual_parameter",
 					"params","boolean","procedure_heading","function_returning"]:
 		for child in node.children:
 			return generate(child)
 
-	elif node.type in ["mulop"]:
+	elif node.type in ["closed_if_statement","open_if_statement"]:
+		stat_counter += 1
+		a = stat_counter
+		f.write("if %s goto then%d;\n" % (get_list(generate(node.children[0])),a) )
+		if len(node.children) == 3:
+			generate(node.children[2])
+		
+		f.write("goto endif%d;\n" % (a) )
+		f.write("then%d:\n" % (a) )
+		generate(node.children[1])
+		
+		f.write("endif%d:\n" % (a) )
+		
+
+	elif node.type in ["mulop","relop","addop"]:
 		st = generate(node.children[0])
-		for i in dic_trans:
-			st = st.replace(i,dic_trans[i])
+		if st in dic_trans:
+			st = dic_trans[st]
 		return st
 
 	elif node.type in ["primary"]:
@@ -129,7 +144,7 @@ def generate(node):
 			else:
 				return generate(child)
 
-	elif node.type in [ "identifier_list","type_denoter","actual_parameter_list"]:
+	elif node.type in [ "identifier_list","type_denoter","actual_parameter_list","expression"]:
 		l = []
 		for child in node.children:
 			r = generate(child)

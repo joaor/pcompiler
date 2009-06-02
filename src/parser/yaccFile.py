@@ -318,8 +318,7 @@ def p_unsigned_constant(t):
 					 | REAL
  					 | CHAR
  					 | boolean
-					 | STRING
- 					 | NIL'''
+					 | STRING'''
 	t[0] = AST("unsigned_constant", [t[1]] )
 
 def p_boolean(t):
@@ -333,8 +332,7 @@ def p_relop(t):
  		    | LESS
  		    | GREATER
  		    | LESS_OR_EQUAL
- 		    | GREATER_OR_EQUAL
- 		    | IN'''
+ 		    | GREATER_OR_EQUAL'''
 	t[0] = AST("relop", [t[1]] )
 
 def p_addop(t):

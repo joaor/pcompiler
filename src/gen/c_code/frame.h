@@ -5,5 +5,4 @@ typedef struct _f1{
 	int return_address;	//endereço do código na função chamante
 	void* return_val[32]; //variavel de retorno
 }frame;
-//Acrescentar aki um return value;
-//depois quem chama so tera de aceder a do seu filho:)
+

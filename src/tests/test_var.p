@@ -1,35 +1,34 @@
 program test_var; 
 var 
-y,z : real;  
-a : char;
-b : boolean;
-c,v : integer;
-
-function Add(i, j:Integer): Integer;
-begin
-	writeln('ola');
-   	Add := i + j;
-end;
-
-function Sub : real;
-begin
-	writeln('ole');
-	c := Add(6,7);
-		begin
-			Sub := 3.9;
-		end;
-   	writeln(c);
-end;
+c : integer;
 
 begin
   	c := 20;
-  	writeln(c);
-  		begin
-  			c := 6;
-			v := Add(3,c);
-			writeln(v);
-			z := Sub;
-			writeln(z);
-  		end;
+	if ((c <> 20) or (c = 20)) then
+		begin
+			writeln('PI');
+			writeln('PI');
+		end;
+	if c = 20 then 
+		begin
+			if c = 21 then 
+				begin
+					if c = 20 then 
+					begin
+						writeln('P9');
+						writeln('P9');
+					end
+				end
+			else
+				begin
+					writeln('P00');
+					writeln('P00');
+				end
+		end
+	else
+		begin
+			writeln('P00');
+			writeln('P00');
+		end
 end.
 
