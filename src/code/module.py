@@ -32,7 +32,7 @@ def find_var(node, stack):
 		try:
 			return stack.find_var(node.upper())
 		except VariableNotDefined, e:
-			print e
+			EXCEPTIONS.add(e)
 	
 	
 def find_pf(node, stack):

@@ -7,7 +7,7 @@ class ProcAndFunc():
 		self.name = nm
 		self.params = []
 		self.r_type =None
-		self.var_not_asg=[]
+		self.not_init=[]
 		
 	def add_param(self,i):
 		for p in self.params:
@@ -40,4 +40,7 @@ class ProcAndFunc():
 
 	def set_returning(self, t):
 		self.t_type = t
+		
+	def add_ex(self, e):
+		self.not_init.append(e)
 
