@@ -7,16 +7,15 @@ dic_trans = {"mod":"%","div":"/","=":"==","and":"&&","<>":"!=","or":"||","not":"
 global_vars = {} #{'y': 'g0', 'a': 'g2', 'c': 'g4', 'z': 'g1', 'b': 'g3'}
 var_type = {} #{'g4': 'integer', 'g3': 'boolean', 'g2': 'char', 'g1': 'real', 'g0': 'real'}
 frames = {}
-#WRONG_NUMBER_OF_ARGUMENTS: SCOPEINNER takes exactly 0 arguments (0 given) 
+
 #VARIABLE_NOT_ASSIGNED: C (INTEGER) has no value
-#Funcoes com o mesmo nome nao da erro
-#Correspondencia entre argumentos
-#Erro float
-#Estamos a cagar para funcoes k nao devolvem nada
+#Estamos a ignorar funcoes k nao devolvem nada
 #falha kando se chma funcao/proc do estilo ola(2+3,9)
 #falha kando se chma funcao/proc do estilo ola(ola(4),9)
 #VARIABLE_NOT_DEFINED: NOT
-#FOR esta exclusive -> 1 to 5 (1,2,3,4)
+#Linhas de sintax
+#assigment de 0 nao da
+#Se der erro de sintax nao fazer geracao de codigo
 
 return_counter = 0
 var_counter = 0
@@ -133,7 +132,7 @@ def generate(node):
 		f.write("goto while%d;\n" % (a) )
 		f.write("endwhile%d:\n" % (a) )		
 
-	elif node.type in ["closed_for_statement","open_for_statement"]: #FALTA TESTAR DENTRO DE FUNCOES TAMBEM
+	elif node.type in ["closed_for_statement","open_for_statement"]:
 		stat_counter += 1
 		a = stat_counter
 		var = generate(node.children[0])
@@ -160,6 +159,17 @@ def generate(node):
 		f.write("%s = %s %s 1;\n" % (v,v,op) )
 		f.write("goto for%d;\n" % (a) )
 		f.write("endfor%d:\n" % (a) )
+
+	elif node.type in ["repeat_statement"]:
+		stat_counter += 1
+		a = stat_counter
+		exp = get_list(generate(node.children[1]))
+		f.write("repeat%d:\n" % (a) )
+		generate(node.children[0])
+		f.write("if %s goto endrepeat%d;\n" % (exp,a) )
+		generate(node.children[1])
+		f.write("goto repeat%d;\n" % (a) )
+		f.write("endrepeat%d:\n" % (a) )
 
 	elif node.type in ["mulop","relop","addop"]:
 		st = generate(node.children[0])
@@ -217,7 +227,7 @@ def generate(node):
 					f.write("%s = %s;\n" % (global_vars[var],st) )
 
 	elif node.type in ["procedure_statement","function_designator"]:
-		name = generate(node.children[0])
+		name = generate(node.children[0]).lower()
 		
 		if len(node.children)!=1:
 			params = generate(node.children[1])
