@@ -32,4 +32,11 @@ begin
 			writeln(z);
   		end;
 end.
+yacc: Warning. Token 'CONST' defined, but not used.
+yacc: Warning. Token 'EXP' defined, but not used.
+yacc: Warning. Token 'COMMENT' defined, but not used.
+yacc: Warning. Token 'IN' defined, but not used.
+yacc: Warning. Token 'NIL' defined, but not used.
+yacc: Warning. Token 'BOOLEAN' defined, but not used.
+yacc: Warning. Token 'TYPE' defined, but not used.
 
