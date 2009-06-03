@@ -26,13 +26,25 @@ begin
 end;
 
 procedure Sco;
-var P : integer;
+var P,sum,count1,count2,ola : integer;
 Q,z: real; 
 begin
 	P := 10 + c;
 	z := 4.4;
 	Q := 2.2 * z;	
 	writeln(P);
+	sum := 1;
+	for count1 := 1 to 5 do	
+		begin
+  			sum := sum + count1;
+			writeln (sum);
+			ola := 1;
+			for count2 := 5 downto 1 do	
+				begin
+		  			ola := ola + count2;
+					writeln (ola);
+				end;
+		end;
 	P := Add(P,1);
 	ScopeInner(2.3,P);
 end;

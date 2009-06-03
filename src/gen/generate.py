@@ -133,7 +133,7 @@ def generate(node):
 		f.write("goto while%d;\n" % (a) )
 		f.write("endwhile%d:\n" % (a) )		
 
-	elif node.type in ["closed_for_statement","open_for_statement"]:
+	elif node.type in ["closed_for_statement","open_for_statement"]: #FALTA TESTAR DENTRO DE FUNCOES TAMBEM
 		stat_counter += 1
 		a = stat_counter
 		var = generate(node.children[0])
@@ -147,16 +147,19 @@ def generate(node):
 				v = global_vars[var]
 		f.write("%s = %s;\n" % (v,get_list(assg)) )
 		direction = generate(node.children[2]).lower()
+		if direction == 'to':
+			signal = '<'
+			op = '+'
+		else:
+			signal = '>'
+			op = '-'
 		limit = generate(node.children[3])
 		f.write("for%d:\n" % (a) )
-		f.write("if (!(%s < %s)) goto endfor%d;\n" % (v,str(limit[0][0]),a) )
+		f.write("if (!(%s %s= %s)) goto endfor%d;\n" % (v,signal,str(limit[0][0]),a) )
 		generate(node.children[4])
-		f.write("%s = %s + 1;\n" % (v,v) )
+		f.write("%s = %s %s 1;\n" % (v,v,op) )
 		f.write("goto for%d;\n" % (a) )
 		f.write("endfor%d:\n" % (a) )
-		
-		print limit
-		print direction
 
 	elif node.type in ["mulop","relop","addop"]:
 		st = generate(node.children[0])
