@@ -199,17 +199,17 @@ def assignment_validation(node, assignment_type=None, t=None):
 			if t==None: return
 	
 	elif type(node) == type(1):
-		t = ['INTEGER',node]
+		t = ['INTEGER',True]
 
 	elif type(node) == type(1.1):
-		t = ['REAL',node]
+		t = ['REAL',True]
 	
 	elif node.type == 'boolean':
-		t = ['BOOLEAN',node]	
+		t = ['BOOLEAN',True]	
 	
 	elif node.type == 'function_designator':
 		t = [function_designator(node, stack), True]
-		
+
 	if t:
 		if t[0] != assignment_type:
 			raise DifferentTypesInAssignment(t[0],assignment_type)
