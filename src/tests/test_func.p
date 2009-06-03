@@ -5,7 +5,7 @@ a : char;
 b : boolean;
 c,v : integer;
 
-function Add(i, j:Integer): Integer;
+function Add(i,j:Integer): real;
 begin
 	writeln('ola');
    	Add := i + j;

@@ -9,9 +9,6 @@ class Exceptions():
 		for i in range(len(self.list)):
 			if type(i)==e:
 				return i
-				
-	def remove(self, i):
-		self.list.pop(i)
 	
 	
 	def __str__(self):

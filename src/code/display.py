@@ -157,8 +157,17 @@ def function_designator(node):
 def function_calling(node):
 	name = node.children[0].upper()
 	pf = find_pf(name, stack)
+		
 	
 	if not pf:	return
+	
+	###########################
+	for i in pf.not_init:
+		v = find_var(i.var, stack)
+		if v and v.value:
+			EXCEPTIONS.remove(i)
+			pf.init.remove(i)
+	
 	if len(node.children)>1:
 	
 		types = params_subtree(node.children[1])
@@ -180,13 +189,13 @@ def function_calling(node):
 
 def assignment_validator(node, var, info):
 	if not info:	return
-
 	try:
 		go_children(node.children[1:], assignment_validation, info[0])
 		stack.set_value_on_var(var.upper(),True)
-
 	except VariableNotAssigned, e:
 		EXCEPTIONS.add(e)
+		if stack.proc_func and table.name==stack.proc_func[-1]:
+			stack.proc_func[-1].add_ex(e)
 
 
 def assignment_validation(node, assignment_type=None, t=None):
@@ -208,12 +217,12 @@ def assignment_validation(node, assignment_type=None, t=None):
 		t = ['BOOLEAN',True]	
 	
 	elif node.type == 'function_designator':
-		t = [function_designator(node, stack), True]
+		t = [function_designator(node), True]
 
 	if t:
 		if t[0] != assignment_type:
 			raise DifferentTypesInAssignment(t[0],assignment_type)
-		if not t[1]:
+		if not t[1]:			
 			raise VariableNotAssigned(node.upper(), t[0])
 	else:
 		go_children(node.children, assignment_validation, assignment_type)
