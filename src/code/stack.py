@@ -60,6 +60,5 @@ class Stack():
 			if var: 
 				var.value = value
 	
-	
 
 

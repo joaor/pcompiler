@@ -4,10 +4,13 @@ from code.proc_and_func import *
 from excep.wrong_number_of_arguments import *
 from excep.different_types_in_assignment import *
 from excep.variable_not_assigned import *
+from excep.exceptions import *
 
 key_words = ['WRITELN', 'WRITE', 'READLN', 'READ', 
 						'+', '-', '*', '/', '=','<','>','<>','<=', '>=', 
 						'MOD', 'DIV', 'AND', 'OR']
+						
+EXCEPTIONS = Exceptions()
 
 
 def display(node,i=0):
@@ -37,7 +40,7 @@ def find_pf(node, stack):
 		try:
 			return stack.find_pf(node)
 		except FunctionOrProcedureNotDefined, e:
-			print e
+			EXCEPTIONS.add(e)
 	 
 
 

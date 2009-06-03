@@ -12,6 +12,9 @@ run_tree(t)
 #display(t)
 #generate(t)
 #print stack.length()
+print '##################################################'
+print EXCEPTIONS
+print '##################################################'
 print '-----------------'
 print stack.display()
 print '-----------------'
