@@ -105,16 +105,15 @@ def p_procedure_heading(t):
 
 #Declaracao de funcoes---------------------------------------------------------
 def p_function_declaration(t):
-	#funcao a;  ;-> nao devolve nada
-	'''function_declaration 	: FUNCTION block_name SEMICOLON block
- 						| function_heading SEMICOLON block'''
+	#funcao a;  ;-> nao devolve nada -> foi apagada
+	'''function_declaration 	: function_heading SEMICOLON block'''
 	if len(t)==5:
 		t[0] = AST("function_declaration", [t[2],t[4]] )
 	else:
 		t[0] = AST("function_declaration", [t[1],t[3]] )
 
 def p_function_heading(t):
-	#funcao a: real;  ; -> devolve real
+	#funcao a: real;  ; -> devolve real 
 	#funcao b(a,b : real ; VAR g:integer ) : real;  ;  -> devolve real, mas tem argumentos
 	'''function_heading 	: FUNCTION block_name COLON function_returning 
 	 					| FUNCTION block_name formal_parameter_list COLON function_returning'''
@@ -219,6 +218,7 @@ def p_closed_for_statement(t):
 def p_direction(t):
 	'''direction 	: TO
  				| DOWNTO'''
+	t[0] = AST("direction", [t[1]] )
 
 #IF e atribuicao de valores a variaveis-----------------------------------------------------------------------
 # program a; begin a:=0; b:=1; if a=b then begin a:=1 end; end.
@@ -304,6 +304,8 @@ def p_primary(t):
  				| NOT primary'''
 	if len(t)==2:
 		t[0] = AST("primary", [t[1]] )
+	elif len(t)==3:
+		t[0] = AST("primary", [t[1],t[2]] )
 	else:
 		t[0] = AST("primary", [t[2]] )
 
@@ -319,8 +321,7 @@ def p_unsigned_constant(t):
 					 | REAL
  					 | CHAR
  					 | boolean
-					 | STRING
- 					 | NIL'''
+					 | STRING'''
 	t[0] = AST("unsigned_constant", [t[1]] )
 
 def p_boolean(t):
@@ -334,8 +335,7 @@ def p_relop(t):
  		    | LESS
  		    | GREATER
  		    | LESS_OR_EQUAL
- 		    | GREATER_OR_EQUAL
- 		    | IN'''
+ 		    | GREATER_OR_EQUAL'''
 	t[0] = AST("relop", [t[1]] )
 
 def p_addop(t):
