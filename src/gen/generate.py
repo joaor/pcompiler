@@ -135,27 +135,18 @@ def generate(node):
 	elif node.type in ["closed_for_statement","open_for_statement"]:
 		stat_counter += 1
 		a = stat_counter
-		var = generate(node.children[0])
-		assg = generate(node.children[1])
-		if ACT_BLOCK == MAIN_BLOCK:
-			v = global_vars[var]
-		else:
-			if var in frames[ACT_BLOCK].global_vars:
-				v = frames[ACT_BLOCK].global_vars[var]
-			else:
-				v = global_vars[var]
-		f.write("%s = %s;\n" % (v,get_list(assg)) )
-		direction = generate(node.children[2]).lower()
+		v = generate(node.children[0]) #gera assigment
+		direction = generate(node.children[1]).lower()
 		if direction == 'to':
 			signal = '<'
 			op = '+'
 		else:
 			signal = '>'
 			op = '-'
-		limit = generate(node.children[3])
+		limit = generate(node.children[2])
 		f.write("for%d:\n" % (a) )
 		f.write("if (!(%s %s= %s)) goto endfor%d;\n" % (v,signal,str(limit[0][0]),a) )
-		generate(node.children[4])
+		generate(node.children[3])
 		f.write("%s = %s %s 1;\n" % (v,v,op) )
 		f.write("goto for%d;\n" % (a) )
 		f.write("endfor%d:\n" % (a) )
@@ -220,11 +211,14 @@ def generate(node):
 				f.write("*((%s*)sp->parent->return_val[0]) = %s;\n" % (rt,st) )
 			elif ACT_BLOCK == MAIN_BLOCK:
 				f.write("%s = %s;\n" % (global_vars[var],st) )
+				return global_vars[var]
 			else:
 				if var in frames[ACT_BLOCK].global_vars:
 					f.write("%s = %s;\n" % (frames[ACT_BLOCK].global_vars[var],st) )
+					return frames[ACT_BLOCK].global_vars[var]
 				else:
 					f.write("%s = %s;\n" % (global_vars[var],st) )
+					return global_vars[var]
 
 	elif node.type in ["procedure_statement","function_designator"]:
 		name = generate(node.children[0]).lower()

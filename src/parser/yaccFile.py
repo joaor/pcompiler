@@ -208,12 +208,12 @@ def p_closed_while_statement(t):
 #FOR----------------------------------------------------------------------------------------------------
 #program a; var sum:integer; begin sum:=0; for count:=1 to 100 do sum:=sum + count; end.
 def p_open_for_statement(t):
-	'open_for_statement : FOR IDENTIFIER DECLARATOR expression direction expression DO open_statement'
-	t[0] = AST("open_for_statement", [t[2],t[4],t[5],t[6],t[8]] )
+	'open_for_statement : FOR assignment_statement direction expression DO open_statement'
+	t[0] = AST("open_for_statement", [t[2],t[3],t[4],t[6]] )
 
 def p_closed_for_statement(t):
-	'closed_for_statement : FOR IDENTIFIER DECLARATOR expression direction expression DO closed_statement'
-	t[0] = AST("closed_for_statement", [t[2],t[4],t[5],t[6],t[8]] )
+	'closed_for_statement : FOR assignment_statement direction expression DO closed_statement'
+	t[0] = AST("closed_for_statement", [t[2],t[3],t[4],t[6]] )
 
 def p_direction(t):
 	'''direction 	: TO

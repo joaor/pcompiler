@@ -20,7 +20,7 @@ def run_tree( node):
 		try:
 			proc_or_func_creation(node)
 		except FunctionOrProcedureAlreadyDefined, e:
-			print e
+			EXCEPTIONS.add(e)
 		
 		return
 
@@ -35,13 +35,13 @@ def run_tree( node):
 		nm = node.children[0].upper()
 			
 	elif node.type in ['procedure_statement', 'function_designator']:
-		function_designator(node, stack)
+		function_designator(node)
 			
 	elif node.type == 'assignment_statement':
 		try:
 			assignment_validator(node, node.children[0], find_var(node.children[0], stack))		
 		except DifferentTypesInAssignment, e:
-			print e
+			EXCEPTIONS.add(e)
 	
 	else:
 		go_children(node.children, run_tree)
@@ -58,7 +58,7 @@ def type_denoter_subtree( node):
 		try:										
 			table.add_type(node.upper())
 		except TypeUnknow, e:
-			print e
+			EXCEPTIONS.add(e)
 		return node
 
 	go_children(node.children, type_denoter_subtree)
@@ -72,7 +72,7 @@ def var_subtree(node):
 		try:
 			table.add_var(node.upper())
 		except VariableAlreadyDefined, e:
-			print e
+			EXCEPTIONS.add(e)
 		return
 
 	if node.type == 'type_denoter':
@@ -80,7 +80,7 @@ def var_subtree(node):
 		try:
 			table.check_queue()
 		except VariableDeclarationError, e:
-			print e
+			EXCEPTIONS.add(e)
 		table.clean()
 	else:
 		go_children(node.children, var_subtree)
@@ -98,7 +98,7 @@ def pf_subtree(node):
 			stack.add_proc_or_func(nm)
 			table.name = nm
 		except FunctionOrProcedureAlreadyDefined, e:
-			print e
+			EXCEPTIONS.add(e)
 			return False
 	
 	elif node.type == 'block':
@@ -147,14 +147,14 @@ def params_subtree(node):
 	
 
 
-def function_designator(node, stack):
+def function_designator(node):
 	try:
-		return function_calling(node, stack)
-	except WrongNumberOfArguments, e:	print e
-	except FunctionOrProcedureNotDefined, e: print e
+		return function_calling(node)
+	except WrongNumberOfArguments, e:	EXCEPTIONS.add(e)
+	except FunctionOrProcedureNotDefined, e: EXCEPTIONS.add(e)
 
 
-def function_calling(node, stack):
+def function_calling(node):
 	name = node.children[0].upper()
 	pf = find_pf(name, stack)
 	
@@ -168,7 +168,7 @@ def function_calling(node, stack):
 		try:	
 			pf.check_params(types)
 		except ArgumentTypeIncompatibility, e:
-			print e
+			EXCEPTIONS.add(e)
 
 		return pf.r_type
 	else:
@@ -180,19 +180,13 @@ def function_calling(node, stack):
 
 def assignment_validator(node, var, info):
 	if not info:	return
-		
-	#print var, info
+
 	try:
 		go_children(node.children[1:], assignment_validation, info[0])
-		#assignment_validation(node, info[0])
+		stack.set_value_on_var(var.upper(),True)
+
 	except VariableNotAssigned, e:
-		print e
-		return
-	
-	#print '###########',var.upper()
-	stack.set_value_on_var(var.upper(),True)
-	#print find_var(var.upper(),stack)
-	#info[1]=True 
+		EXCEPTIONS.add(e)
 
 
 def assignment_validation(node, assignment_type=None, t=None):
@@ -205,17 +199,17 @@ def assignment_validation(node, assignment_type=None, t=None):
 			if t==None: return
 	
 	elif type(node) == type(1):
-		t = ['INTEGER',node]
+		t = ['INTEGER',True]
 
 	elif type(node) == type(1.1):
-		t = ['REAL',node]
+		t = ['REAL',True]
 	
 	elif node.type == 'boolean':
-		t = ['BOOLEAN',node]	
+		t = ['BOOLEAN',True]	
 	
 	elif node.type == 'function_designator':
 		t = [function_designator(node, stack), True]
-		
+
 	if t:
 		if t[0] != assignment_type:
 			raise DifferentTypesInAssignment(t[0],assignment_type)

@@ -7,6 +7,7 @@ class ProcAndFunc():
 		self.name = nm
 		self.params = []
 		self.r_type =None
+		self.var_not_asg=[]
 		
 	def add_param(self,i):
 		for p in self.params:
