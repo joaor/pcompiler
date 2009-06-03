@@ -12,10 +12,15 @@ frames = {}
 #Estamos a ignorar funcoes k nao devolvem nada
 #falha kando se chma funcao/proc do estilo ola(2+3,9)
 #falha kando se chma funcao/proc do estilo ola(ola(4),9)
-#VARIABLE_NOT_DEFINED: NOT
 #Linhas de sintax
-#assigment de 0 nao da
 #Se der erro de sintax nao fazer geracao de codigo
+#yacc: Warning. Token 'CONST' defined, but not used.
+#yacc: Warning. Token 'EXP' defined, but not used.
+#yacc: Warning. Token 'COMMENT' defined, but not used.
+#yacc: Warning. Token 'IN' defined, but not used.
+#yacc: Warning. Token 'NIL' defined, but not used.
+#yacc: Warning. Token 'BOOLEAN' defined, but not used.
+#yacc: Warning. Token 'TYPE' defined, but not used.
 
 return_counter = 0
 var_counter = 0
