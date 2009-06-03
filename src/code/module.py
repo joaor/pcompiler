@@ -8,7 +8,7 @@ from excep.exceptions import *
 
 key_words = ['WRITELN', 'WRITE', 'READLN', 'READ', 
 						'+', '-', '*', '/', '=','<','>','<>','<=', '>=', 
-						'MOD', 'DIV', 'AND', 'OR']
+						'MOD', 'DIV', 'AND', 'OR', 'NOT']
 						
 EXCEPTIONS = Exceptions()
 
