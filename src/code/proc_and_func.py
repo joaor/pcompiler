@@ -12,7 +12,7 @@ class ProcAndFunc():
 	def add_param(self,i):
 		for p in self.params:
 			if p.name == i.name:
-				raise NameRepeatedInParams(i.name)
+				raise NameRepeatedInParams(i.name, self.name)
 		self.params.append(i)
 
 			

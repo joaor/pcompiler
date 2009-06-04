@@ -90,6 +90,7 @@ def var_subtree(node):
 def proc_or_func_creation(node):
 	go_children(node.children, pf_subtree)
 	stack.pop_frame()
+	table = stack.stack[-1]
 
 def pf_subtree(node):
 	if node.type == 'block_name':
@@ -162,10 +163,10 @@ def function_designator(node, f=True):
 
 def function_calling(node, flag):
 	if flag:
-		name = node.children[0]
+		name = node.children[0].upper()
 		l = len(node.children)
 	else:
-		name = node
+		name = node.upper()
 		l = 0
 		
 	pf = find_pf(name, stack)
@@ -238,7 +239,7 @@ def assignment_validation(node, assignment_type=None, v=None):
 
 	if v:
 		if v.type != assignment_type:
-			raise DifferentTypesInAssignment(v.type,assignment_type)
+			raise DifferentTypesInAssignment(v.type,assignment_type, table.name)
 		if not v.value:			
 			raise VariableNotAssigned(node.upper(), v.type, table.name)
 	else:

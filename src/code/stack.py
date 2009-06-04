@@ -23,14 +23,14 @@ class Stack():
 		for i in range(len(self.stack)-1,-1,-1):
 			var = self.stack[i].find(identifier)
 			if var: return var
-		raise VariableNotDefined(identifier)
+		raise VariableNotDefined(identifier, self.stack[-1].name)
 		
 		
 	def find_pf(self, name):
 		for i in self.proc_func:
 			if i.name == name:
 				return i
-		raise FunctionOrProcedureNotDefined(name)
+		raise FunctionOrProcedureNotDefined(name, self.stack[-1].name)
 		
 	
 	def length(self):
@@ -52,7 +52,7 @@ class Stack():
 	def add_proc_or_func(self, name):
 		try:	
 			self.find_pf(name)
-			raise FunctionOrProcedureAlreadyDefined(name)
+			raise FunctionOrProcedureAlreadyDefined(name, self.stack[-1].name)
 		except FunctionOrProcedureNotDefined, e:
 			self.proc_func.append( ProcAndFunc(name))
 			

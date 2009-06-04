@@ -20,14 +20,14 @@ class Table():
 		if id not in self.listv and not self.find(id):
 			self.listv.append(id)
 		else:
-			raise VariableAlreadyDefined(id)
+			raise VariableAlreadyDefined(id, self.name)
 
 
 	def add_type(self, type):
 		if type in ['REAL', 'INTEGER', 'CHAR', 'BOOLEAN']:
 			self.listt.append(type)
 		else:
-			raise TypeUnknow(type)
+			raise TypeUnknow(type, self.name)
 		
 
 	def find(self, identifier):
@@ -39,6 +39,9 @@ class Table():
 	def clean(self):
 		self.listv = []
 		self.listt = []
+		
+	def __str__(self):
+		return str(self.name)
 		
 			
 	def check_queue(self):
@@ -53,7 +56,7 @@ class Table():
 				self.list.append( Var(i,self.listt[0]))
 				
 		else:
-			raise VariableDeclarationError(lv, lt)
+			raise VariableDeclarationError(lv, lt, self.name)
 				
 		
 
