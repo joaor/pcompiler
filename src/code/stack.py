@@ -4,11 +4,17 @@ from excep.variable_not_defined import *
 from excep.function_or_procedure_not_defined import *
 from excep.function_or_procedure_already_defined import *
 from code.proc_and_func import *
+from code.var import *
 
 class Stack():
 	def __init__(self):
 		self.stack = []
-		self.proc_func = []
+		self.proc_func = [ProcAndFunc('WRITELN'),
+											ProcAndFunc('WRITE'),
+											ProcAndFunc('READ'),
+											ProcAndFunc('READLN')]
+		for i in self.proc_func:
+			i.add_param(Var('param'))
 
 	def add_frame(self, frame):
 		self.stack.append(frame)
@@ -16,11 +22,7 @@ class Stack():
 	def find_var(self, identifier):
 		for i in range(len(self.stack)-1,-1,-1):
 			var = self.stack[i].find(identifier)
-			if var: return [var.type, var.value]
-				
-		if self.proc_func and self.proc_func[-1].name == identifier:
-			return [self.proc_func[-1].r_type, True]
-			
+			if var: return var
 		raise VariableNotDefined(identifier)
 		
 		

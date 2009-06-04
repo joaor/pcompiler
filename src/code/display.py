@@ -39,7 +39,7 @@ def run_tree( node):
 			
 	elif node.type == 'assignment_statement':
 		try:
-			assignment_validator(node, node.children[0], find_var(node.children[0], stack))		
+			assignment_validator(node, find_var(node.children[0], stack))		
 		except DifferentTypesInAssignment, e:
 			EXCEPTIONS.add(e)
 	
@@ -70,7 +70,7 @@ def var_subtree(node):
 	if node == None:		return
 	if type(node) == type(""):
 		try:
-			table.add_var(node.upper())
+			table.add_var(node.upper()) #procura local (permite same name que um var global)
 		except VariableAlreadyDefined, e:
 			EXCEPTIONS.add(e)
 		return
@@ -106,7 +106,9 @@ def pf_subtree(node):
 	
 	elif node.type == 'function_returning':
 		#stack.get_pf().set_returning(node.children[0].upper())
-		stack.get_pf().r_type = node.children[0].upper()
+		type = node.children[0].upper()
+		stack.get_pf().r_type = type
+		table.set_var(table.name, type) 
 	
 	elif node.type == 'variable_declaration_part':	
 		go_children(node.children, var_subtree)
@@ -125,9 +127,13 @@ def params_subtree(node):
 	list=[]
 	if node == None: return
 	if type(node) == type(""):
-		f= find_var(node, stack)
-		if f: 
-			return [f[0]]
+		arr = ["'",'"']
+		if node[0] in arr and node[-1] in arr:
+			return ['STRING']
+			
+		var= find_var(node, stack)
+		if var: 
+			return [var.type]
 	
 	elif type(node) == type(1):
 		return ['INTEGER']
@@ -147,28 +153,32 @@ def params_subtree(node):
 	
 
 
-def function_designator(node):
+def function_designator(node, f=True):
 	try:
-		return function_calling(node)
+		return function_calling(node, f)
 	except WrongNumberOfArguments, e:	EXCEPTIONS.add(e)
 	except FunctionOrProcedureNotDefined, e: EXCEPTIONS.add(e)
 
 
-def function_calling(node):
-	name = node.children[0].upper()
-	pf = find_pf(name, stack)
+def function_calling(node, flag):
+	if flag:
+		name = node.children[0]
+		l = len(node.children)
+	else:
+		name = node
+		l = 0
 		
-	
-	if not pf:	return
+	pf = find_pf(name, stack)
+	if pf == None:	return
 	
 	###########################
 	for i in pf.not_init:
-		v = find_var(i.var, stack)
-		if v and v.value:
+		var = find_var(i.var, stack)
+		if var and var.value:
 			EXCEPTIONS.remove(i)
-			pf.init.remove(i)
+			pf.not_init.remove(i)
 	
-	if len(node.children)>1:
+	if l>1:
 	
 		types = params_subtree(node.children[1])
 		if len(types) != len(pf.params):
@@ -179,51 +189,58 @@ def function_calling(node):
 		except ArgumentTypeIncompatibility, e:
 			EXCEPTIONS.add(e)
 
-		return pf.r_type
 	else:
 		if len(pf.params)!=0:
 			raise WrongNumberOfArguments(name, len(pf.params), 0)
 			
-		return pf.r_type
+	return pf.r_type
 
 
-def assignment_validator(node, var, info):
-	if not info:	return
+def assignment_validator(node, var):
+	if not var:	return
 	try:
-		go_children(node.children[1:], assignment_validation, info[0])
-		stack.set_value_on_var(var.upper(),True)
+		go_children(node.children[1:], assignment_validation, var.type)
+		stack.set_value_on_var(var.name,True)
 	except VariableNotAssigned, e:
 		EXCEPTIONS.add(e)
-		if stack.proc_func and table.name==stack.proc_func[-1]:
+		if stack.proc_func and table.name==stack.proc_func[-1].name:
 			stack.proc_func[-1].add_ex(e)
 
 
-def assignment_validation(node, assignment_type=None, t=None):
+def assignment_validation(node, assignment_type=None, v=None):
 	if node==None or assignment_type==None: return
+	
 	if type(node) == type(''):
 		if len(node)==3 and node[0]==node[2]=="'":
-			t = ['CHAR',node]
+			v = Var(node,'CHAR',True)
+		
 		else:
-			t=find_var(node.upper(), stack)
-			if t==None: return
+			v = find_var(node, stack)
+			if v==None:
+				t = function_designator(node, False)
+				if t: 
+					v = Var(node, t, True)
+					EXCEPTIONS.pop()
+				else: return
+			
 	
 	elif type(node) == type(1):
-		t = ['INTEGER',True]
+		v = Var(str(node),'INTEGER',True)
 
 	elif type(node) == type(1.1):
-		t = ['REAL',True]
+		v = Var(str(node),'REAL',True)
 	
 	elif node.type == 'boolean':
-		t = ['BOOLEAN',True]	
+		v = Var(str(node),'BOOLEAN',True)
 	
 	elif node.type == 'function_designator':
-		t = [function_designator(node), True]
+		v = Var(str(node),function_designator(node),True)
 
-	if t:
-		if t[0] != assignment_type:
-			raise DifferentTypesInAssignment(t[0],assignment_type)
-		if not t[1]:			
-			raise VariableNotAssigned(node.upper(), t[0])
+	if v:
+		if v.type != assignment_type:
+			raise DifferentTypesInAssignment(v.type,assignment_type)
+		if not v.value:			
+			raise VariableNotAssigned(node.upper(), v.type, table.name)
 	else:
 		go_children(node.children, assignment_validation, assignment_type)
 			

@@ -6,8 +6,8 @@ class ProcAndFunc():
 	def __init__(self, nm):
 		self.name = nm
 		self.params = []
-		self.r_type =None
-		self.not_init=[]
+		self.r_type = None
+		self.not_init = []
 		
 	def add_param(self,i):
 		for p in self.params:
@@ -28,7 +28,7 @@ class ProcAndFunc():
 		#print '--------------'
 			
 		for i in range(len(types)):
-			if types[i] != self.params[i].type:
+			if self.params[i].type and types[i] != self.params[i].type:
 				raise ArgumentTypeIncompatibility(i+1,self.params[i].type,self.name)
 		return True
 			

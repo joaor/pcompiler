@@ -11,7 +11,8 @@ t = yacc.parse(s)
 run_tree(t)
 #display(t)
 print EXCEPTIONS
-if not EXCEPTIONS:
+if not EXCEPTIONS.list:
+	#print 'generation'
 	generate(t)
 
 

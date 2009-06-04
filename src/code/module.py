@@ -6,8 +6,7 @@ from excep.different_types_in_assignment import *
 from excep.variable_not_assigned import *
 from excep.exceptions import *
 
-key_words = ['WRITELN', 'WRITE', 'READLN', 'READ', 
-						'+', '-', '*', '/', '=','<','>','<>','<=', '>=', 
+key_words = ['+', '-', '*', '/', '=','<','>','<>','<=', '>=', 
 						'MOD', 'DIV', 'AND', 'OR', 'NOT', 'TO', 'DOWNTO']
 						
 EXCEPTIONS = Exceptions()
@@ -28,14 +27,16 @@ def add_to_stack(t, stack):
 	
 	
 def find_var(node, stack):
+	node=node.upper()
 	if node not in key_words: 	
 		try:
-			return stack.find_var(node.upper())
+			return stack.find_var(node)
 		except VariableNotDefined, e:
 			EXCEPTIONS.add(e)
 	
 	
 def find_pf(node, stack):
+	node = node.upper()
 	if node not in key_words:
 		try:
 			return stack.find_pf(node)

@@ -27,7 +27,6 @@ begin
   		begin
   			c := 6;
 			v := Add(3,c);
-			writeln(v);
 			z := Sub;
 			writeln(z);
   		end;

@@ -5,6 +5,7 @@ function Summation(num : integer) : integer;
 var f,m,a,ola,count : integer;
 begin
 	f := num - 1;
+	a := 1;
 	writeln(f);
 	while a < 6 do
 	  	begin

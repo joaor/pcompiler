@@ -11,6 +11,11 @@ class Table():
 		self.listv = []
 		self.listt = []
 
+
+	def set_var(self, n, t):
+		self.list.append(Var(n, t))
+
+
 	def add_var(self,id):
 		if id not in self.listv and not self.find(id):
 			self.listv.append(id)
