@@ -23,7 +23,7 @@ function Add(i, j:Integer): Integer;
 begin
    	Add := i + j;
 	ScopeInner2(2.2,j);
-	write(c)
+	writeln(c)
 end;
 
 procedure Sco;

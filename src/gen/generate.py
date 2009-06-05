@@ -8,18 +8,6 @@ global_vars = {} #{'y': 'g0', 'a': 'g2', 'c': 'g4', 'z': 'g1', 'b': 'g3'}
 var_type = {} #{'g4': 'integer', 'g3': 'boolean', 'g2': 'char', 'g1': 'real', 'g0': 'real'}
 frames = {}
 
-#Estamos a ignorar funcoes que nao devolvem nada, para isso usamos proc
-#falha kando se cahma funcao/proc do estilo ola(2+3,9)
-#falha kando se cahma funcao/proc do estilo ola(ola(4),9)
-#falha quando se declaram funcoes dentro de funcoes
-#yacc: Warning. Token 'CONST' defined, but not used.
-#yacc: Warning. Token 'EXP' defined, but not used.
-#yacc: Warning. Token 'COMMENT' defined, but not used.
-#yacc: Warning. Token 'IN' defined, but not used.
-#yacc: Warning. Token 'NIL' defined, but not used.
-#yacc: Warning. Token 'BOOLEAN' defined, but not used.
-#yacc: Warning. Token 'TYPE' defined, but not used.
-
 return_counter = 0
 var_counter = 0
 stat_counter = 0
