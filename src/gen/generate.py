@@ -11,6 +11,7 @@ frames = {}
 #Estamos a ignorar funcoes que nao devolvem nada, para isso usamos proc
 #falha kando se cahma funcao/proc do estilo ola(2+3,9)
 #falha kando se cahma funcao/proc do estilo ola(ola(4),9)
+#falha quando se declaram funcoes dentro de funcoes
 #yacc: Warning. Token 'CONST' defined, but not used.
 #yacc: Warning. Token 'EXP' defined, but not used.
 #yacc: Warning. Token 'COMMENT' defined, but not used.
@@ -23,7 +24,6 @@ return_counter = 0
 var_counter = 0
 stat_counter = 0
 block_flag = False
-main_flag = False
 MAIN_BLOCK = ""
 ACT_BLOCK = ""
 
@@ -54,17 +54,14 @@ def generate(node):
 			MAIN_BLOCK = b.lower()
 			block_flag = True
 		ACT_BLOCK = b.lower()
+		print ACT_BLOCK 
 		return ACT_BLOCK
 
-	elif node.type in ["procedure_and_function_declaration_part"] and not main_flag:
+	elif node.type in ["procedure_and_function_declaration_part"]:
 		for child in node.children:
-			generate(child)
-		main = True
+			generate(child)		
 		ACT_BLOCK = MAIN_BLOCK
-
-	elif node.type in ["procedure_and_function_declaration_part"] and main_flag:
-		for child in node.children:
-			generate(child)
+		print ACT_BLOCK 
 	
 	elif node.type in ["function_declaration"]:
 		name = generate(node.children[0].children[0])
