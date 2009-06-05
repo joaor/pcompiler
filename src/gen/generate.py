@@ -54,14 +54,12 @@ def generate(node):
 			MAIN_BLOCK = b.lower()
 			block_flag = True
 		ACT_BLOCK = b.lower()
-		print ACT_BLOCK 
 		return ACT_BLOCK
 
 	elif node.type in ["procedure_and_function_declaration_part"]:
 		for child in node.children:
 			generate(child)		
 		ACT_BLOCK = MAIN_BLOCK
-		print ACT_BLOCK 
 	
 	elif node.type in ["function_declaration"]:
 		name = generate(node.children[0].children[0])
@@ -161,6 +159,7 @@ def generate(node):
 
 	elif node.type in ["mulop","relop","addop"]:
 		st = generate(node.children[0])
+		st = st.lower()
 		if st in dic_trans:
 			st = dic_trans[st]
 		return st
