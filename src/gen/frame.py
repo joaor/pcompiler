@@ -1,5 +1,3 @@
-from generate import *
-
 class Frame(object):
 	def __init__(self,r=None):
 		self.global_vars = {}

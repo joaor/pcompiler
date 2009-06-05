@@ -8,11 +8,9 @@ global_vars = {} #{'y': 'g0', 'a': 'g2', 'c': 'g4', 'z': 'g1', 'b': 'g3'}
 var_type = {} #{'g4': 'integer', 'g3': 'boolean', 'g2': 'char', 'g1': 'real', 'g0': 'real'}
 frames = {}
 
-#VARIABLE_NOT_ASSIGNED: C (INTEGER) has no value
-#Estamos a ignorar funcoes k nao devolvem nada
-#falha kando se chma funcao/proc do estilo ola(2+3,9)
-#falha kando se chma funcao/proc do estilo ola(ola(4),9)
-#Se der erro de sintax nao fazer geracao de codigo
+#Estamos a ignorar funcoes que nao devolvem nada, para isso usamos proc
+#falha kando se cahma funcao/proc do estilo ola(2+3,9)
+#falha kando se cahma funcao/proc do estilo ola(ola(4),9)
 #yacc: Warning. Token 'CONST' defined, but not used.
 #yacc: Warning. Token 'EXP' defined, but not used.
 #yacc: Warning. Token 'COMMENT' defined, but not used.
@@ -56,7 +54,6 @@ def generate(node):
 			MAIN_BLOCK = b.lower()
 			block_flag = True
 		ACT_BLOCK = b.lower()
-		print ACT_BLOCK
 		return ACT_BLOCK
 
 	elif node.type in ["procedure_and_function_declaration_part"] and not main_flag:
@@ -64,7 +61,6 @@ def generate(node):
 			generate(child)
 		main = True
 		ACT_BLOCK = MAIN_BLOCK
-		print ACT_BLOCK
 
 	elif node.type in ["procedure_and_function_declaration_part"] and main_flag:
 		for child in node.children:
@@ -398,8 +394,4 @@ def get_type(v):
 		return "char"
 	else:
 		return "int"
-
-
-
-
 
