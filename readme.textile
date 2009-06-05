@@ -2,3 +2,8 @@ Projecto de Compiladores: Compilador de Pascal em Python
 
 João Alexandre Rodrigues
 Diogo Laginha 
+
+- Para correr o compilador, bastará correr o ficheiro main.py, passando-lhe um ficheiro .kpa
+
+Exemplo:
+	python main.py < tests/test_if.p
